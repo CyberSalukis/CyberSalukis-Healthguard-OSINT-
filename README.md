@@ -1,5 +1,5 @@
 # CyberSalukis-Healthguard-OSINT-
-OSINT &amp; OSINT tooling that assists health in identifying, assessing, and reducing risks posed by AI models, LLM deployments, and AI connected digital health environments. 
+OSINT &amp; OSINT tooling that assists health organizations in identifying, assessing, and reducing risks posed by AI models, LLM deployments, and AI connected digital health environments. 
 **An Open-Source Digital Public Good (DPG) — Automated OSINT Reconnaissance Framework for Healthcare AI Security**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
