@@ -1,0 +1,62 @@
+# CyberSalukis HealthGuard OSINT
+# Censys Query Library — Healthcare AI Network Intelligence
+# Tested: June 2026
+# AUTHORIZED USE ONLY
+
+queries:
+
+  - title: "Censys: Exposed Jupyter Notebook (Healthcare AI)"
+    query: 'services.http.response.html_title: "Jupyter" and services.port: 8888'
+    description: Jupyter notebook servers on port 8888. Critical risk in healthcare AI environments.
+    severity: critical
+    tippss: [Identity, Privacy, Protection, Security]
+    remediation: Enable Jupyter authentication and SSL. Restrict to internal network.
+
+  - title: "Censys: Open Elasticsearch Cluster"
+    query: "services.elasticsearch.cluster_name: * and services.port: 9200"
+    description: Unauthenticated Elasticsearch. Healthcare AI RAG systems store PHI here.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable X-Pack security. Restrict to internal network. Audit for PHI.
+
+  - title: "Censys: Qdrant Vector Database Exposed"
+    query: "services.port: 6333 and services.transport_protocol: TCP"
+    description: Qdrant vector database. Stores clinical document embeddings for healthcare AI RAG.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable API key auth. Restrict to internal network.
+
+  - title: "Censys: Gradio AI Interface (Port 7860)"
+    query: 'services.http.response.html_title: "Gradio" and services.port: 7860'
+    description: Gradio AI demo interface publicly accessible. Healthcare context risk.
+    severity: high
+    tippss: [Identity, Protection, Security]
+    remediation: Require authentication. Restrict to internal network.
+
+  - title: "Censys: Streamlit Application Exposed"
+    query: 'services.http.response.html_title: "Streamlit" and services.port: 8501'
+    description: Streamlit clinical AI application exposed publicly.
+    severity: high
+    tippss: [Identity, Protection, Security]
+    remediation: Enable authentication or reverse proxy with auth.
+
+  - title: "Censys: Redis Exposed (AI Session Cache)"
+    query: "services.redis.ping_response: PONG and services.port: 6379"
+    description: Unauthenticated Redis. LLM conversation context including PHI stored here.
+    severity: high
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable Redis AUTH. Restrict to internal network.
+
+  - title: "Censys: Expired TLS Certificate on Healthcare Service"
+    query: 'parsed.names: "{domain}" and parsed.validity.end: [* TO now]'
+    description: Expired TLS on healthcare AI services. MITM risk for clinical data in transit.
+    severity: high
+    tippss: [Protection, Security]
+    remediation: Renew certificates. Implement automated certificate lifecycle management.
+
+  - title: "Censys: MLflow Model Registry Exposed"
+    query: 'services.http.response.html_title: "MLflow" and services.port: 5000'
+    description: MLflow experiment tracking. Reveals AI model lineage, metrics, and download access.
+    severity: high
+    tippss: [Trust, Protection, Security]
+    remediation: Enable MLflow authentication. Restrict to internal network.
