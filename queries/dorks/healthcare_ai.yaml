@@ -1,0 +1,237 @@
+# CyberSalukis HealthGuard OSINT
+# Healthcare AI Google Dork Library
+# Category: General Healthcare AI Exposure
+# Tested: June 2026
+#
+# Usage: These dorks are executed automatically by the dork-scan module.
+#        Replace {domain} and {target} with your assessment targets.
+#        Manual execution: paste query directly into Google Search.
+#
+# AUTHORIZED USE ONLY — Use only against infrastructure you own or have
+# explicit written permission to assess.
+
+dorks:
+
+  # ── LLM / AI Endpoint Exposure ─────────────────────────────────────────────
+
+  - title: "Exposed OpenAI-Compatible LLM API Endpoint"
+    query: 'site:{domain} inurl:"/v1/chat/completions" OR inurl:"/v1/completions"'
+    description: >
+      Discovers publicly exposed OpenAI-compatible LLM API endpoints on the target domain.
+      Exposed endpoints may permit unauthorized model access, prompt injection, data extraction,
+      and jailbreaking of healthcare AI assistants.
+    severity: critical
+    tippss: [Identity, Protection, Security]
+    remediation: >
+      Immediately restrict LLM API endpoints behind authentication.
+      Rotate any exposed API keys. Implement IP allowlisting.
+      Enable API access logging and anomaly detection.
+
+  - title: "Exposed AI Model Configuration File (YAML/JSON)"
+    query: 'site:{domain} filetype:yaml OR filetype:json "model" "api_key" OR "openai" OR "anthropic" OR "llm"'
+    description: >
+      Searches for publicly accessible AI model configuration files containing API keys,
+      model identifiers, endpoint URLs, or system prompt content relevant to healthcare AI deployments.
+    severity: critical
+    tippss: [Identity, Privacy, Security]
+    remediation: >
+      Remove configuration files from public-facing directories.
+      Use environment variables for all API credentials.
+      Add .yaml, .json, and .env to .gitignore.
+      Implement secrets scanning in CI/CD pipeline.
+
+  - title: "Exposed Gradio AI Demo Interface (Healthcare)"
+    query: 'site:{domain} "Running on" gradio "healthcare" OR "clinical" OR "patient"'
+    description: >
+      Gradio is widely used to rapidly deploy AI demos. Healthcare-context Gradio interfaces
+      may expose patient data, model parameters, system prompts, or provide unauthenticated
+      LLM access to clinical tools.
+    severity: high
+    tippss: [Identity, Privacy, Protection]
+    remediation: >
+      Disable public access to all AI demo interfaces.
+      Require authentication before deployment to any network-accessible environment.
+      Remove all healthcare data from demo environments.
+
+  - title: "Exposed Jupyter Notebook with AI/Healthcare Content"
+    query: 'site:{domain} inurl:jupyter OR inurl:notebook "import openai" OR "import transformers" OR "patient" OR "PHI"'
+    description: >
+      Publicly accessible Jupyter notebooks may contain AI model code, training data references,
+      API keys, patient data samples, or sensitive clinical AI logic that provides adversarial
+      reconnaissance value.
+    severity: critical
+    tippss: [Identity, Privacy, Protection, Security]
+    remediation: >
+      Immediately restrict Jupyter server access to internal networks only.
+      Require authentication for all notebook servers.
+      Audit all notebooks for API keys and patient data.
+      Implement notebook security scanning.
+
+  - title: "Exposed Ollama LLM Server Web Interface"
+    query: 'site:{domain} inurl:11434 OR "ollama" "model" "healthcare" OR "clinical"'
+    description: >
+      Ollama is a popular local LLM server commonly used for on-premise healthcare AI deployments.
+      Publicly exposed Ollama instances allow unrestricted model querying and may expose
+      custom fine-tuned models trained on clinical data.
+    severity: critical
+    tippss: [Identity, Protection, Security]
+    remediation: >
+      Bind Ollama to localhost (127.0.0.1) only.
+      Place behind authenticated reverse proxy if external access required.
+      Audit Ollama model library for PHI-containing fine-tuned models.
+
+  # ── PHI / Data Leakage ───────────────────────────────────────────────────────
+
+  - title: "PHI in Public Document — Patient Data Exposure"
+    query: 'site:{domain} filetype:pdf OR filetype:xlsx "patient" "date of birth" OR "SSN" OR "medical record number"'
+    description: >
+      Searches for publicly accessible documents that may contain protected health information
+      including patient names, dates of birth, Social Security numbers, or medical record numbers.
+      HIPAA breach notification obligations apply.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: >
+      Immediately remove documents containing PHI from public access.
+      Conduct comprehensive audit of all public-facing document repositories.
+      Implement DLP controls. Assess HIPAA breach notification obligations.
+      Notify legal and compliance teams.
+
+  - title: "Healthcare AI Training Data Exposure"
+    query: 'site:{domain} "training data" OR "dataset" "patient" OR "clinical" OR "EHR" filetype:csv OR filetype:json'
+    description: >
+      Searches for publicly accessible healthcare AI training datasets that may contain
+      de-identified or potentially re-identifiable patient data. Training data exposure
+      enables re-identification attacks and model inversion.
+    severity: high
+    tippss: [Privacy, Protection]
+    remediation: >
+      Remove training datasets from public access.
+      Verify de-identification compliance with HIPAA Safe Harbor or Expert Determination.
+      Implement access controls and DLP on all AI data storage.
+
+  - title: "Exposed FHIR API Endpoint"
+    query: 'site:{domain} inurl:"/fhir" OR inurl:"/r4" OR inurl:"/stu3" "patient" OR "observation"'
+    description: >
+      FHIR APIs expose structured patient data and are commonly integrated with healthcare AI systems.
+      Unauthenticated or poorly secured FHIR endpoints provide direct access to patient records
+      and enable AI prompt injection via data retrieval.
+    severity: critical
+    tippss: [Identity, Privacy, Protection]
+    remediation: >
+      Restrict FHIR endpoints to authenticated access only (SMART on FHIR OAuth2).
+      Implement rate limiting and audit logging.
+      Conduct FHIR API security assessment.
+
+  # ── AI Vendor / Procurement Disclosure ────────────────────────────────────────
+
+  - title: "AI Vendor Procurement Record or Contract Disclosure"
+    query: '"{target}" "artificial intelligence" OR "machine learning" OR "LLM" "vendor" OR "contract" OR "RFP" filetype:pdf'
+    description: >
+      Searches for publicly accessible procurement records, RFPs, or contracts disclosing
+      AI vendor relationships. Vendor identity reveals supply chain dependencies,
+      attack paths, and infrastructure details useful for adversarial planning.
+    severity: medium
+    tippss: [Trust, Security]
+    remediation: >
+      Review public procurement disclosure policies.
+      Minimize vendor detail in publicly accessible documents.
+      Monitor for unauthorized vendor relationship disclosure.
+
+  - title: "AI System Architecture Documentation Exposed"
+    query: 'site:{domain} "AI" OR "LLM" OR "machine learning" filetype:pdf "architecture" OR "integration" OR "API" OR "data flow"'
+    description: >
+      Publicly accessible architecture documentation reveals AI system design, integration
+      points, data flows, and vendor dependencies that enable targeted attack planning
+      against healthcare AI infrastructure.
+    severity: medium
+    tippss: [Trust, Protection, Security]
+    remediation: >
+      Restrict system architecture documentation to internal access only.
+      Remove detailed integration diagrams from public-facing documentation.
+      Apply information classification to all AI architecture materials.
+
+  # ── Cloud Storage ──────────────────────────────────────────────────────────────
+
+  - title: "Exposed S3 Bucket — Healthcare AI Content"
+    query: 'site:s3.amazonaws.com "{target}" "patient" OR "clinical" OR "model" OR "training"'
+    description: >
+      Searches for publicly accessible AWS S3 buckets associated with the target containing
+      healthcare AI models, training data, or patient data. Public S3 buckets are a leading
+      cause of healthcare data breaches.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: >
+      Audit all S3 bucket permissions. Apply S3 Block Public Access at account level.
+      Enable S3 Access Analyzer. Remove public access from all buckets.
+      Enable CloudTrail for access auditing.
+
+  - title: "Exposed Azure Blob Storage — Healthcare Content"
+    query: 'site:blob.core.windows.net "{target}" "patient" OR "clinical" OR "ai" OR "model"'
+    description: >
+      Searches for publicly accessible Azure Blob Storage containers associated with the target
+      containing healthcare or AI content.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: >
+      Review Azure Storage Account public access settings.
+      Disable public blob access at account level.
+      Implement Azure Policy to enforce storage security baseline.
+
+  # ── GitHub / Code Repositories ────────────────────────────────���─────────────────
+
+  - title: "GitHub Repository — Healthcare AI Code"
+    query: 'site:github.com "{target}" "openai" OR "anthropic" OR "langchain" "healthcare" OR "clinical" OR "EHR" OR "HIPAA"'
+    description: >
+      Searches GitHub for repositories associated with the target containing healthcare AI code.
+      Public repositories may reveal internal AI tools, system architecture, API usage patterns,
+      and implementation details with adversarial reconnaissance value.
+    severity: medium
+    tippss: [Identity, Security]
+    remediation: >
+      Audit GitHub organization repositories for sensitive content.
+      Remove API keys, PHI, and internal system references.
+      Set repositories containing healthcare AI implementation details to private.
+
+  - title: "Exposed LLM API Keys in GitHub"
+    query: 'site:github.com "{target}" "OPENAI_API_KEY" OR "ANTHROPIC_API_KEY" OR "sk-" filename:.env OR filename:config'
+    description: >
+      Searches GitHub for accidentally committed LLM API keys associated with the target.
+      Exposed keys enable unauthorized model access, billing abuse, and potential access
+      to models fine-tuned on healthcare data.
+    severity: critical
+    tippss: [Identity, Security]
+    remediation: >
+      Immediately rotate all exposed API keys.
+      Remove from repository history using git-filter-repo.
+      Enable GitHub secret scanning and push protection.
+      Implement pre-commit hooks (detect-secrets, gitleaks).
+
+  # ── Prompt Injection / AI Safety ────────────────────────────────────────────────
+
+  - title: "System Prompt Disclosure — Clinical AI"
+    query: 'site:{domain} "system prompt" OR "you are an AI" OR "you are a helpful assistant" "healthcare" OR "clinical" OR "patient"'
+    description: >
+      Publicly accessible AI system prompts reveal behavioral instructions given to clinical
+      AI assistants, enabling targeted prompt injection and jailbreak attacks designed
+      to bypass healthcare-specific safety constraints.
+    severity: high
+    tippss: [Trust, Identity, Safety, Security]
+    remediation: >
+      Remove system prompt content from public-facing interfaces.
+      Treat system prompts as sensitive configuration data.
+      Implement prompt injection input validation and output filtering.
+      Never embed PHI or internal system references in system prompts.
+
+  - title: "Exposed AI Chatbot — Clinical or Patient-Facing"
+    query: 'site:{domain} "chat" OR "ask" OR "assistant" "clinical" OR "patient" OR "symptom" OR "appointment"'
+    description: >
+      Patient or clinician-facing AI chatbot interfaces in healthcare are high-value prompt
+      injection targets. If the AI has access to scheduling, clinical records, or care
+      coordination systems, successful injection could extract PHI or manipulate workflows.
+    severity: high
+    tippss: [Trust, Identity, Safety, Security]
+    remediation: >
+      Implement prompt injection defenses (input validation, output filtering, content moderation).
+      Isolate AI chat interfaces from sensitive data systems where not required.
+      Deploy anomaly detection on AI interface inputs and outputs.
+      Conduct regular adversarial red-team testing of clinical AI interfaces.
