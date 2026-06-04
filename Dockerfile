@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 LABEL maintainer="IEEE CyberSalukis"
 LABEL description="IEEE CyberSalukis HealthGuard OSINT — Healthcare AI Attack Surface Reconnaissance"
-LABEL org.opencontainers.image.source="https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT"
+LABEL org.opencontainers.image.source="https://github.com/CyberSalukis/CyberSalukis-Healthguard-OSINT-"
 
 WORKDIR /app
 

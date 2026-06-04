@@ -31,7 +31,7 @@ class LLMRecon(BaseModule):
     MODULE_NAME = "llm-recon"
     MODULE_LABEL = "LLM Vulnerability Recon"
 
-    # Common LLM API endpoint patterns to probe
+    # Common LLM API endpoint patterns for optional authorized HTTP checks
     LLM_ENDPOINT_PATHS = [
         "/v1/chat/completions",
         "/v1/completions",
@@ -77,8 +77,11 @@ class LLMRecon(BaseModule):
         """Execute LLM recon and return findings."""
         findings = []
 
-        if self.domain:
+        passive_only = self.config.get("scope", {}).get("passive_only", True)
+        if self.domain and not passive_only:
             findings.extend(self._probe_llm_endpoints())
+        elif self.domain:
+            self._log("Passive-only mode enabled — skipping direct HTTP endpoint checks")
 
         findings.extend(self._llm_documentation_findings())
         findings.extend(self._governance_gap_indicators())
@@ -87,8 +90,9 @@ class LLMRecon(BaseModule):
 
     def _probe_llm_endpoints(self) -> List[Dict[str, Any]]:
         """
-        Passively probe known LLM API endpoint paths on the target domain.
-        Passive: only checks HTTP response codes and headers, no payload injection.
+        Perform optional low-impact HTTP checks for known LLM API endpoint paths.
+        This mode only checks HTTP response codes and headers; it does not send prompts,
+        payloads, exploit strings, or authentication attempts. Use only when authorized.
         """
         findings = []
         base_urls = [
@@ -102,13 +106,13 @@ class LLMRecon(BaseModule):
         for base in base_urls:
             for path in self.LLM_ENDPOINT_PATHS:
                 url = base + path
-                self._log(f"Probing: {url}")
-                result = self._passive_probe(url)
+                self._log(f"Checking endpoint path: {url}")
+                result = self._http_endpoint_check(url)
 
                 if result["accessible"]:
                     severity = "critical" if result["status"] == 200 else "high"
                     finding = self._make_finding(
-                        source="HTTP Passive Probe",
+                        source="Authorized HTTP Endpoint Check",
                         query=f"GET {url}",
                         title=f"Potentially Exposed LLM Endpoint: {path}",
                         description=(
@@ -134,10 +138,10 @@ class LLMRecon(BaseModule):
 
         return findings
 
-    def _passive_probe(self, url: str) -> Dict:
+    def _http_endpoint_check(self, url: str) -> Dict:
         """
-        Passive HTTP probe: only checks response code and headers.
-        Does not send any payload or exploit code.
+        Low-impact HTTP endpoint check: only checks response code and headers.
+        Does not send prompts, payloads, exploit code, or credential guesses.
         """
         try:
             resp = requests.get(

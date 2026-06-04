@@ -364,7 +364,7 @@
     systems.
 
   TECHNICAL DETAIL:
-    A passive probe and Google dork search found a publicly accessible
+    An authorized HTTP endpoint check and Google dork search found a publicly accessible
     Jupyter notebook server at jupyter.example-rmc.org (port 8888)
     without authentication. The server's open directory listing was
     visible, showing notebooks including clinical_model_v2.ipynb and
@@ -645,13 +645,13 @@
   Open-Source Digital Public Good (DPG)
   MIT License
   IEEE SA Cybersecurity Hackathon 2026
-  https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT
+  https://github.com/CyberSalukis/CyberSalukis-Healthguard-OSINT-
 
 ================================================================================
   IEEE CyberSalukis HealthGuard OSINT — Digital Public Good (DPG)
   IEEE SA Cybersecurity Hackathon 2026
   Report Generated: 2026-06-02 14:35:00 UTC
   Report ID: ERMC-2026-0602-001
-  Framework: https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT
+  Framework: https://github.com/CyberSalukis/CyberSalukis-Healthguard-OSINT-
   License: MIT | DPG Standard Compliant
 ================================================================================

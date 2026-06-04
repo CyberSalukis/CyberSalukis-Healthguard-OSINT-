@@ -7,7 +7,7 @@
     "dpg": true,
     "license": "MIT",
     "generated": "2026-06-02T14:35:00Z",
-    "repository": "https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT"
+    "repository": "https://github.com/CyberSalukis/CyberSalukis-Healthguard-OSINT-"
   },
   "assessment": {
     "target_organization": "Example Regional Medical Center",
@@ -209,7 +209,7 @@
     {
       "id": "dork-scan-0002",
       "module": "dork-scan",
-      "source": "Google Custom Search + Passive HTTP Probe",
+      "source": "Google Custom Search + Authorized HTTP Endpoint Check",
       "query": "site:example-rmc.org inurl:jupyter OR inurl:notebook patient OR clinical OR PHI",
       "url": "http://jupyter.example-rmc.org:8888",
       "title": "AI Development Workspace (Jupyter Notebook) Open to Internet",
@@ -257,7 +257,7 @@
     {
       "id": "llm-recon-0001",
       "module": "llm-recon",
-      "source": "HTTP Passive Probe",
+      "source": "Authorized HTTP Endpoint Check",
       "query": "GET https://api.example-rmc.org/v1/chat/completions",
       "url": "https://api.example-rmc.org/v1/chat/completions",
       "title": "OpenAI-Compatible LLM API Endpoint Accessible Without Authentication",

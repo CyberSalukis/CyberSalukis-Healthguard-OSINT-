@@ -71,8 +71,9 @@ scope:
   max_results_per_query: 10
   # Maximum GitHub repositories to analyze
   max_github_repos: 20
-  # Passive ONLY mode — no active probing (recommended for initial assessments)
-  passive_only: false
+  # Passive-only mode — no direct HTTP endpoint checks (recommended for initial assessments)
+  # Set to false only for authorized low-impact HTTP endpoint checks.
+  passive_only: true
 
 output:
   # Include raw API response URLs in findings

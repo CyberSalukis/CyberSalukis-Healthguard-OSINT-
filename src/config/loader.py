@@ -2,6 +2,7 @@
 Configuration loader for IEEE CyberSalukis HealthGuard OSINT
 """
 
+import copy
 import yaml
 import os
 from pathlib import Path
@@ -12,9 +13,17 @@ DEFAULT_CONFIG = {
         "shodan": "",
         "google_cse_api_key": "",
         "google_cse_cx": "",
+        "bing_api_key": "",
+        "brave_api_key": "",
+        "mojeek_api_key": "",
         "github_token": "",
         "censys_api_id": "",
         "censys_api_secret": "",
+        "leakix_api_key": "",
+    },
+    "ivre": {
+        "web_url": "https://ivre.rocks/cgi-bin/view.py",
+        "use_local_cli": False,
     },
     "rate_limits": {
         "google_requests_per_day": 100,
@@ -40,7 +49,7 @@ def load_config(config_path: str = "config/config.yaml") -> dict:
     Falls back to defaults if file not found.
     Environment variables override file values for API keys.
     """
-    cfg = DEFAULT_CONFIG.copy()
+    cfg = copy.deepcopy(DEFAULT_CONFIG)
 
     path = Path(config_path)
     if path.exists():
@@ -53,9 +62,13 @@ def load_config(config_path: str = "config/config.yaml") -> dict:
         "SHODAN_API_KEY":        ("api_keys", "shodan"),
         "GOOGLE_CSE_API_KEY":    ("api_keys", "google_cse_api_key"),
         "GOOGLE_CSE_CX":         ("api_keys", "google_cse_cx"),
+        "BING_API_KEY":          ("api_keys", "bing_api_key"),
+        "BRAVE_API_KEY":         ("api_keys", "brave_api_key"),
+        "MOJEEK_API_KEY":        ("api_keys", "mojeek_api_key"),
         "GITHUB_TOKEN":          ("api_keys", "github_token"),
         "CENSYS_API_ID":         ("api_keys", "censys_api_id"),
         "CENSYS_API_SECRET":     ("api_keys", "censys_api_secret"),
+        "LEAKIX_API_KEY":        ("api_keys", "leakix_api_key"),
     }
     for env_var, (section, key) in env_keys.items():
         val = os.environ.get(env_var)
@@ -67,7 +80,7 @@ def load_config(config_path: str = "config/config.yaml") -> dict:
 
 def _deep_merge(base: dict, override: dict) -> dict:
     """Recursively merge override into base."""
-    result = base.copy()
+    result = copy.deepcopy(base)
     for k, v in override.items():
         if k in result and isinstance(result[k], dict) and isinstance(v, dict):
             result[k] = _deep_merge(result[k], v)

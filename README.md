@@ -60,8 +60,8 @@ All findings are mapped to the **TIPPSS** security framework:
 ### Installation
 
 ```bash
-git clone https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT.git
-cd IEEE-CyberSalukis-HealthGuard-OSINT
+git clone https://github.com/CyberSalukis/CyberSalukis-Healthguard-OSINT-.git
+cd CyberSalukis-Healthguard-OSINT-
 pip install -r requirements.txt
 cp config/config.example.yaml config/config.yaml
 # Edit config/config.yaml with your API keys
@@ -86,7 +86,10 @@ python healthguard.py --target "General Health System" --domain ghs.org --module
 python healthguard.py --target "General Health System" --domain ghs.org --module github-intel
 
 # Generate report from existing findings
-python healthguard.py --report --input output/findings.json --format pdf
+python healthguard.py --report --input output/findings.json --format both
+
+# Optional: allow low-impact HTTP endpoint checks when explicitly authorized
+python healthguard.py --target "General Health System" --domain ghs.org --module llm-recon --enable-http-probes
 ```
 
 ---
@@ -133,56 +136,56 @@ DETAILED FINDINGS
 ## Repository Structure
 
 ```
-IEEE-CyberSalukis-HealthGuard-OSINT/
-├── healthguard.py              # Main entry point
+CyberSalukis-Healthguard-OSINT-/
+├── healthguard.py              # Main CLI entry point
 ├── requirements.txt            # Python dependencies
 ├── Dockerfile                  # Container deployment
+├── LICENSE
+├── .gitignore
 ├── config/
-│   ├── config.example.yaml     # Configuration template
-│   └── config.yaml             # Your config (gitignored)
+│   └── config.example.yaml     # Configuration template; copy to config.yaml locally
 ├── src/
+│   ├── config/
+│   │   └── loader.py           # Config management
 │   ├── modules/                # Reconnaissance modules
+│   │   ├── base.py
 │   │   ├── dork_scan.py
 │   │   ├── llm_recon.py
 │   │   ├── github_intel.py
 │   │   ├── shodan_scan.py
+│   │   ├── censys_scan.py
+│   │   ├── ivre_recon.py
+│   │   ├── leakix_scan.py
 │   │   ├── vendor_intel.py
 │   │   └── social_recon.py
 │   ├── utils/
-│   │   ├── rate_limiter.py     # API rate limit management
-│   │   ├── normalizer.py       # Results normalization & dedup
+│   │   ├── normalizer.py       # Results normalization and deduplication
 │   │   └── tippss_mapper.py    # TIPPSS category mapping
-│   ├── reports/
-│   │   └── report_generator.py # Report generation
-│   └── config/
-│       └── loader.py           # Config management
+│   └── reports/
+│       └── report_generator.py # Report generation
 ├── queries/
 │   ├── dorks/
-│   │   ├── healthcare_ai.yaml  # Healthcare AI Google dorks
-│   │   ├── llm_endpoints.yaml  # LLM endpoint discovery dorks
-│   │   └── phi_exposure.yaml   # PHI leakage dorks
+│   │   ├── healthcare_ai.yaml
+│   │   ├── llm_endpoints.yaml
+│   │   └── phi_exposure.yaml
 │   ├── shodan/
-│   │   ├── medical_iot.yaml    # Medical IoT device queries
-│   │   └── ai_infrastructure.yaml
-│   ├── github/
-│   │   ├── ai_configs.yaml     # AI config file dorks
-│   │   └── credentials.yaml    # Credential exposure dorks
+│   │   ├── ai_infrastructure.yaml
+│   │   └── medical_iot.yaml
 │   ├── censys/
 │   │   └── health_networks.yaml
-│   └── social/
-│       └── personnel.yaml      # Personnel disclosure queries
+│   ├── ivre/
+│   │   └── healthcare_scans.yaml
+│   └── leakix/
+│       └── healthcare_leaks.yaml
 ├── docs/
 │   ├── GETTING_STARTED.md
 │   ├── METHODOLOGY.md
 │   ├── TIPPSS_MAPPING.md
 │   ├── RESPONSIBLE_USE.md
-│   ├── API_SETUP.md
 │   └── CONTRIBUTING.md
-├── tests/
-│   ├── test_modules.py
-│   └── test_report.py
 └── output_samples/
-    └── sample_report.txt       # Example output report
+    ├── sample_report.txt
+    └── sample_report.json
 ```
 
 ---
@@ -192,7 +195,8 @@ IEEE-CyberSalukis-HealthGuard-OSINT/
 **This framework is designed exclusively for authorized defensive security assessments.**
 
 - Use only against infrastructure you own or have explicit written authorization to assess
-- All queries are passive OSINT only — no active exploitation, scanning, or unauthorized access
+- Passive OSINT is the default mode; optional low-impact HTTP endpoint checks require explicit authorization and `--enable-http-probes`
+- No exploitation, payload delivery, credential guessing, or unauthorized access
 - Review your jurisdiction's computer access laws before use
 - See [RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md) for full policy
 

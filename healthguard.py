@@ -81,9 +81,11 @@ MODULE_MAP = {
               type=click.Choice(["txt", "json", "both"]),
               help="Report output format (default: txt)")
 @click.option("--config",   "-c", default="config/config.yaml", help="Config file path")
+@click.option("--passive-only", is_flag=True, default=False, help="Disable direct HTTP endpoint checks")
+@click.option("--enable-http-probes", is_flag=True, default=False, help="Allow optional low-impact HTTP endpoint checks when authorized")
 @click.option("--verbose",  "-v", is_flag=True, default=False, help="Verbose output")
 @click.option("--quiet",    "-q", is_flag=True, default=False, help="Suppress banner and progress output")
-def main(target, domain, module, all_modules, report, input, output, format, config, verbose, quiet):
+def main(target, domain, module, all_modules, report, input, output, format, config, passive_only, enable_http_probes, verbose, quiet):
     """
     IEEE CyberSalukis HealthGuard OSINT — Healthcare AI Attack Surface Reconnaissance
 
@@ -101,8 +103,19 @@ def main(target, domain, module, all_modules, report, input, output, format, con
 
     # ── Load config ──────────────────────────────────────────────────────────
     cfg = load_config(config)
+    if passive_only and enable_http_probes:
+        console.print("[bold red]Error:[/bold red] Use either --passive-only or --enable-http-probes, not both.")
+        sys.exit(1)
+
+    cfg.setdefault("scope", {})
+    if passive_only:
+        cfg["scope"]["passive_only"] = True
+    elif enable_http_probes:
+        cfg["scope"]["passive_only"] = False
+
     if verbose:
         console.print(f"[dim]Config loaded from: {config}[/dim]")
+        console.print(f"[dim]Passive-only mode: {cfg.get('scope', {}).get('passive_only', True)}[/dim]")
 
     # ── Report-only mode ─────────────────────────────────────────────────────
     if report:

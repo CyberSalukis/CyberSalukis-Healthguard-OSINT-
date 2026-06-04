@@ -187,7 +187,7 @@ class ReportGenerator:
         lines.append("  IEEE CyberSalukis HealthGuard OSINT — Digital Public Good (DPG)")
         lines.append("  IEEE SA Cybersecurity Hackathon 2026")
         lines.append(f"  Report generated: {datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}")
-        lines.append("  https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT")
+        lines.append("  https://github.com/CyberSalukis/CyberSalukis-Healthguard-OSINT-")
         lines.append(DIVIDER)
 
         with open(output_path, "w", encoding="utf-8") as f:

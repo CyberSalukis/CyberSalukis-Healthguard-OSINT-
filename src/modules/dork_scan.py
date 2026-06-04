@@ -314,12 +314,15 @@ class DorkScanner(BaseModule):
                 title=f"[DRY-RUN] {dork.get('title', 'Healthcare AI Dork')}",
                 description=(
                     f"{dork.get('description', '')}\n\n"
+                    f"Dry-run only: this is a query-library entry, not a discovered exposure. "
+                    f"Intended severity if confirmed by search results: {dork.get('severity', 'info')}.\n"
                     f"Configure GOOGLE_CSE_API_KEY and GOOGLE_CSE_CX to execute this dork automatically."
                 ),
-                severity=dork.get("severity", "info"),
+                severity="info",
                 tippss=dork.get("tippss", ["Security"]),
                 remediation=dork.get("remediation", ""),
                 url="",
+                raw={"dry_run": True, "intended_severity": dork.get("severity", "info")},
             )
             findings.append(finding)
         return findings
