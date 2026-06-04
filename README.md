@@ -218,7 +218,7 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 
 ## Team
 
-**CyberSalukis** — CyberSalukis Cybersecurity Hackathon 2026
+**CyberSalukis** — CyberSalukis IEEE Cybersecurity Hackathon 2026
 
 ---
 
