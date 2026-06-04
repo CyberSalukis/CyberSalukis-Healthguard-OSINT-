@@ -1,17 +1,17 @@
-# CyberSalukis-Healthguard-OSINT-
-OSINT &amp; OSINT tooling that assists health organizations in identifying, assessing, and reducing risks posed by AI models, LLM deployments, and AI connected digital health environments. 
+# CyberSalukis HealthGuard OSINT
+
 **An Open-Source Digital Public Good (DPG) — Automated OSINT Reconnaissance Framework for Healthcare AI Security**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-green.svg)](https://python.org)
 [![DPG](https://img.shields.io/badge/Digital%20Public%20Good-DPG-purple.svg)](https://digitalpublicgoods.net)
-[![IEEE SA Cybersecurity Hackathon 2026](https://img.shields.io/badge/IEEE%20SA-Cybersecurity%20Hackathon%202026-orange.svg)](https://ieee.org)
+[![CyberSalukis Cybersecurity Hackathon 2026](https://img.shields.io/badge/CyberSalukis-Cybersecurity%20Hackathon%202026-orange.svg)](https://cybersalukis.org)
 
 ---
 
 ## Overview
 
-** CyberSalukis HealthGuard OSINT** is the first open-source OSINT framework purpose-built for identifying, mapping, and reducing the AI attack surface of healthcare organizations. It is designed as a **Digital Public Good (DPG)** — free, open, and accessible to all health systems globally, including resource-constrained community hospitals, rural health systems, and public health agencies.
+**CyberSalukis HealthGuard OSINT** is the first open-source OSINT framework purpose-built for identifying, mapping, and reducing the AI attack surface of healthcare organizations. It is designed as a **Digital Public Good (DPG)** — free, open, and accessible to all health systems globally, including resource-constrained community hospitals, rural health systems, and public health agencies.
 
 Healthcare organizations are deploying AI models, LLMs, agentic AI systems, and AI-connected IoT devices at an unprecedented pace. Most lack a structured, automated process for understanding what parts of those systems are externally discoverable, exposed, or vulnerable through open-source intelligence. This framework closes that gap.
 
@@ -23,10 +23,13 @@ Healthcare organizations are deploying AI models, LLMs, agentic AI systems, and 
 
 | Module | Description |
 |--------|-------------|
-| `dork-scan` | Execute healthcare AI-specific Google dorks for exposed endpoints, configs, APIs |
+| `dork-scan` | Execute healthcare AI-specific dorks across **4 search engines**: Google CSE, Bing, Brave (independent index), and Mojeek (independent index) |
 | `llm-recon` | LLM vulnerability surface discovery: prompt injection, API key leakage, model fingerprinting |
 | `github-intel` | GitHub dork execution targeting AI config files, credentials, internal documentation |
 | `shodan-scan` | Shodan queries for exposed medical IoT devices and AI infrastructure |
+| `censys-scan` | Censys certificate and host intelligence for healthcare AI infrastructure discovery |
+| `ivre-recon` | IVRE open-source (GPL v3) network recon — self-hostable, no vendor dependency |
+| `leakix-scan` | LeakIX confirmed data leak and exposed service detection (content-verified, not just ports) |
 | `vendor-intel` | Supply chain and vendor relationship intelligence gathering |
 | `social-recon` | Personnel disclosure and social engineering surface analysis |
 | `report` | Generate structured TIPPSS-mapped attack surface assessment reports |
@@ -57,8 +60,8 @@ All findings are mapped to the **TIPPSS** security framework:
 ### Installation
 
 ```bash
-git clone https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT.git
-cd IEEE-CyberSalukis-HealthGuard-OSINT
+git clone https://github.com/CyberSalukis/CyberSalukis-Healthguard-OSINT-.git
+cd CyberSalukis-Healthguard-OSINT-
 pip install -r requirements.txt
 cp config/config.example.yaml config/config.yaml
 # Edit config/config.yaml with your API keys
@@ -99,7 +102,7 @@ HealthGuard OSINT produces:
 ### Sample Report Structure
 
 ```
-IEEE CyberSalukis HealthGuard OSINT — Attack Surface Assessment
+CyberSalukis HealthGuard OSINT — Attack Surface Assessment
 Target: [Organization Name]
 Assessment Date: [Date]
 Modules Run: [List]
@@ -130,7 +133,7 @@ DETAILED FINDINGS
 ## Repository Structure
 
 ```
-IEEE-CyberSalukis-HealthGuard-OSINT/
+CyberSalukis-Healthguard-OSINT-/
 ├── healthguard.py              # Main entry point
 ├── requirements.txt            # Python dependencies
 ├── Dockerfile                  # Container deployment
@@ -143,6 +146,9 @@ IEEE-CyberSalukis-HealthGuard-OSINT/
 │   │   ├── llm_recon.py
 │   │   ├── github_intel.py
 │   │   ├── shodan_scan.py
+│   │   ├── censys_scan.py
+│   │   ├── ivre_recon.py
+│   │   ├── leakix_scan.py
 │   │   ├── vendor_intel.py
 │   │   └── social_recon.py
 │   ├── utils/
@@ -193,7 +199,7 @@ IEEE-CyberSalukis-HealthGuard-OSINT/
 - Review your jurisdiction's computer access laws before use
 - See [RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md) for full policy
 
-**Misuse of this framework against systems without authorization is illegal and unethical. The IEEE CyberSalukis team and contributors bear no responsibility for unauthorized use.**
+**Misuse of this framework against systems without authorization is illegal and unethical. The CyberSalukis team and contributors bear no responsibility for unauthorized use.**
 
 ---
 
@@ -212,7 +218,7 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 
 ## Team
 
-**IEEE CyberSalukis** — IEEE SA Cybersecurity Hackathon 2026
+**CyberSalukis** — CyberSalukis Cybersecurity Hackathon 2026
 
 ---
 
