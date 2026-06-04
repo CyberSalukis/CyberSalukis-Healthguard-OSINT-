@@ -1,0 +1,62 @@
+# CyberSalukis HealthGuard OSINT
+# LeakIX Query Library — Healthcare AI Data Leak Detection
+# Tested: June 2026
+# AUTHORIZED USE ONLY
+
+queries:
+
+  - title: "LeakIX: Open Elasticsearch — Healthcare AI"
+    query: '+plugin:"ElasticSearchOpenPlugin" +host:"{domain}"'
+    description: Confirmed open Elasticsearch. Healthcare AI RAG/search data exposure.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable X-Pack security. Restrict access. Assess HIPAA breach obligations.
+
+  - title: "LeakIX: Open MongoDB"
+    query: '+plugin:"MongoOpenPlugin" +host:"{domain}"'
+    description: Confirmed open MongoDB. May contain AI output logs or clinical interaction data.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable MongoDB auth. Restrict to internal network. Audit for PHI.
+
+  - title: "LeakIX: Exposed .env File"
+    query: '+plugin:"EnvFilePlugin" +host:"{domain}"'
+    description: Exposed .env file. LLM API keys and database credentials common in healthcare AI .env files.
+    severity: critical
+    tippss: [Identity, Security]
+    remediation: Rotate all credentials. Remove from public access. Implement secrets management.
+
+  - title: "LeakIX: Git Config Exposure"
+    query: '+plugin:"GitConfigPlugin" +host:"{domain}"'
+    description: Exposed .git/config revealing repository and deployment details for AI systems.
+    severity: high
+    tippss: [Identity, Security]
+    remediation: Block .git directory in web server config. Audit repository for sensitive content.
+
+  - title: "LeakIX: Open Jupyter Notebook"
+    query: '+plugin:"JupyterOpenPlugin" +host:"{domain}"'
+    description: Confirmed open Jupyter notebook. PHI and API key exposure in healthcare AI context.
+    severity: critical
+    tippss: [Identity, Privacy, Protection, Security]
+    remediation: Enable authentication. Restrict to internal network.
+
+  - title: "LeakIX: S3 Bucket Open"
+    query: '+plugin:"S3BucketOpenPlugin" +host:"{domain}"'
+    description: Confirmed open S3 bucket. Healthcare AI training data, models, or PHI at risk.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable S3 Block Public Access. Audit bucket contents for PHI.
+
+  - title: "LeakIX: Open Redis"
+    query: '+plugin:"RedisOpenPlugin" +host:"{domain}"'
+    description: Confirmed open Redis. LLM conversation context with PHI stored in Redis sessions.
+    severity: high
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable Redis AUTH. Restrict to internal network.
+
+  - title: "LeakIX: Grafana Open Access"
+    query: '+plugin:"GrafanaOpenPlugin" +host:"{domain}"'
+    description: Grafana dashboard open. AI monitoring metrics and infrastructure topology exposed.
+    severity: medium
+    tippss: [Trust, Protection, Security]
+    remediation: Enable Grafana auth. Disable anonymous access. Restrict to internal network.
