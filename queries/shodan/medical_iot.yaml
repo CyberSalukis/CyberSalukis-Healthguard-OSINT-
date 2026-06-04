@@ -1,0 +1,122 @@
+# CyberSalukis HealthGuard OSINT
+# Shodan Query Library — Medical IoT & AI-Connected Devices
+# Tested: June 2026
+#
+# AUTHORIZED USE ONLY
+
+queries:
+
+  - title: "Exposed Ollama LLM Server (Port 11434)"
+    query: "port:11434"
+    description: Ollama LLM serving port open publicly. Allows unrestricted model listing and inference.
+    severity: critical
+    tippss: [Identity, Protection, Security]
+    remediation: Bind to localhost. Place behind authenticated reverse proxy.
+
+  - title: "Exposed Gradio AI Interface (Port 7860)"
+    query: "port:7860 http.title:Gradio"
+    description: Gradio AI demo interface exposed publicly. Common in healthcare AI prototyping.
+    severity: high
+    tippss: [Identity, Protection, Security]
+    remediation: Restrict to internal network. Require authentication.
+
+  - title: "Exposed Streamlit Application (Port 8501)"
+    query: "port:8501 http.title:Streamlit"
+    description: Streamlit healthcare AI dashboard exposed publicly.
+    severity: high
+    tippss: [Identity, Protection, Security]
+    remediation: Restrict to internal network. Add Streamlit authentication or reverse proxy.
+
+  - title: "Open Elasticsearch — Potential Healthcare Data Store"
+    query: "port:9200 product:elastic"
+    description: >
+      Unauthenticated Elasticsearch cluster. In healthcare AI context, may contain
+      PHI indexed for RAG or search, vector embeddings of clinical documents, or AI query logs.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable X-Pack security. Restrict to internal network. Audit indexed data for PHI.
+
+  - title: "Exposed Qdrant Vector Database (Port 6333)"
+    query: "port:6333"
+    description: >
+      Qdrant vector database exposed publicly. Commonly stores embeddings of clinical
+      documents in healthcare RAG systems. Unauthenticated access allows full data extraction.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable API key auth. Restrict to internal network. Audit for PHI embeddings.
+
+  - title: "Exposed Weaviate Vector Database"
+    query: "port:8080 product:weaviate"
+    description: Weaviate vector database. Healthcare AI RAG use case. PHI embedding risk.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable authentication. Restrict to internal network.
+
+  - title: "DICOM Medical Imaging Server Exposed"
+    query: "port:104 OR port:11112"
+    description: >
+      DICOM protocol ports open publicly. Medical imaging data (X-rays, MRI, CT)
+      is highly sensitive PHI. AI-driven imaging systems may expose diagnostic data
+      through unauthenticated DICOM interfaces.
+    severity: critical
+    tippss: [Privacy, Protection, Safety, Security]
+    remediation: >
+      Immediately restrict DICOM ports to internal radiology network.
+      Implement DICOM TLS. Audit for unauthorized access. Notify CISO.
+
+  - title: "HL7 MLLP Healthcare Interface Exposed"
+    query: "port:2575 product:MLLP"
+    description: >
+      HL7 MLLP (Minimal Lower Layer Protocol) is used for clinical data exchange.
+      Exposed MLLP interfaces may transmit unencrypted patient ADT, lab, and order data
+      that AI systems consume.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Restrict to internal clinical network. Implement TLS. Audit data flows.
+
+  - title: "Exposed FHIR Server"
+    query: 'http.html:"FHIR" port:8080 OR port:443'
+    description: >
+      FHIR R4/STU3 server accessible publicly. Healthcare AI systems commonly use FHIR
+      APIs to retrieve patient context for LLM prompts. Unauthenticated access enables
+      PHI extraction and prompt injection via crafted FHIR resources.
+    severity: critical
+    tippss: [Identity, Privacy, Protection, Security]
+    remediation: >
+      Implement SMART on FHIR OAuth2 authentication.
+      Restrict FHIR server to authorized client IPs.
+      Enable audit logging on all FHIR transactions.
+
+  - title: "Medical Device Web Management Interface"
+    query: 'http.title:"patient monitor" OR http.title:"infusion pump" OR http.title:"ventilator"'
+    description: >
+      Web management interfaces for bedside medical devices accessible from the internet.
+      AI-connected monitoring platforms that receive data from compromised devices
+      may make clinical decisions based on falsified telemetry.
+    severity: critical
+    tippss: [Protection, Safety, Security]
+    remediation: >
+      Immediately restrict all medical device management to internal clinical network.
+      Implement network segmentation for medical device VLAN.
+      Disable UPnP and any NAT traversal on clinical network routers.
+
+  - title: "RDP Exposed — Healthcare Organization"
+    query: 'port:3389 org:"{target}"'
+    description: >
+      Remote Desktop Protocol exposed on healthcare infrastructure. Primary vector for
+      ransomware delivery to healthcare networks including AI-connected systems.
+    severity: high
+    tippss: [Protection, Security]
+    remediation: Disable public RDP. Place behind VPN. Enable NLA and MFA.
+
+  - title: "Exposed Jupyter Notebook Server"
+    query: "port:8888 http.title:Jupyter"
+    description: >
+      Jupyter notebook server accessible without authentication. In healthcare AI context,
+      may contain clinical data analysis notebooks, AI model training code, or PHI.
+    severity: critical
+    tippss: [Identity, Privacy, Protection, Security]
+    remediation: >
+      Enable Jupyter authentication and SSL.
+      Restrict to internal network only.
+      Audit notebooks for API keys and patient data.
