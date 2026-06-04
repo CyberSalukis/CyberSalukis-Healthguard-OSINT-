@@ -1,0 +1,78 @@
+# CyberSalukis HealthGuard OSINT
+# PHI Exposure Dork Library
+# Category: Protected Health Information Leakage Discovery
+# Tested: June 2026
+#
+# AUTHORIZED USE ONLY — For defensive security assessment of your own infrastructure
+
+dorks:
+
+  - title: "PHI in Public PDF — Patient Records"
+    query: 'site:{domain} filetype:pdf "patient name" "date of birth" "diagnosis" OR "treatment"'
+    severity: critical
+    tippss: [Privacy, Protection]
+    description: Direct PHI exposure in publicly accessible PDF documents.
+    remediation: Immediately remove, assess HIPAA breach notification obligations.
+
+  - title: "Medical Records Exposed — EHR Export Files"
+    query: 'site:{domain} filetype:csv OR filetype:xlsx "patient_id" OR "mrn" "diagnosis" OR "icd"'
+    severity: critical
+    tippss: [Privacy, Protection]
+    description: Exported EHR data files publicly accessible may contain large volumes of PHI.
+    remediation: Remove immediately, audit access logs, assess breach notification.
+
+  - title: "SSN Exposure in Healthcare Document"
+    query: 'site:{domain} "social security" OR "SSN" "patient" OR "beneficiary" filetype:pdf OR filetype:txt'
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    description: Social Security Numbers in healthcare documents represent high-severity PHI exposure.
+    remediation: Remove immediately, rotate affected credentials, notify legal/compliance.
+
+  - title: "AI Output Log with Patient Data"
+    query: 'site:{domain} "ai response" OR "model output" OR "generated" "patient" "diagnosis" OR "medication"'
+    severity: critical
+    tippss: [Privacy, Protection, Safety]
+    description: >
+      AI system output logs containing patient data in public directories.
+      LLM response logs may contain PHI from clinical queries fed to the model.
+    remediation: Remove logs, implement secure log storage, restrict AI output logging.
+
+  - title: "Insurance / Billing Data with PHI"
+    query: 'site:{domain} filetype:pdf OR filetype:csv "policy number" OR "claim number" "patient" "date of service"'
+    severity: critical
+    tippss: [Privacy, Protection]
+    description: Healthcare billing and insurance records contain PHI and financial data.
+    remediation: Remove from public access, audit document management system permissions.
+
+  - title: "De-identification Failure — AI Training Data"
+    query: 'site:{domain} "de-identified" OR "anonymized" filetype:csv OR filetype:json "age" "diagnosis" "zip"'
+    severity: high
+    tippss: [Privacy, Protection]
+    description: >
+      De-identified datasets that include combinations of age, diagnosis, and zip code
+      may be re-identifiable under the HIPAA Expert Determination standard.
+      These are commonly used in AI model training.
+    remediation: >
+      Conduct re-identification risk assessment on exposed datasets.
+      Apply k-anonymity or differential privacy before public release.
+      Consult with privacy expert on HIPAA compliance.
+
+  - title: "Mental Health Records Exposure"
+    query: 'site:{domain} "mental health" OR "behavioral health" OR "psychiatric" "patient" filetype:pdf OR filetype:txt'
+    severity: critical
+    tippss: [Privacy, Protection]
+    description: >
+      Mental health records carry heightened sensitivity and in many jurisdictions
+      have additional legal protections (42 CFR Part 2 for substance use, state mental health laws).
+    remediation: >
+      Immediately remove. Assess compliance with 42 CFR Part 2 and applicable state laws.
+      Notify legal team immediately.
+
+  - title: "Genomic / Biomarker Data Exposure"
+    query: 'site:{domain} "genomic" OR "genetic" OR "biomarker" "patient" filetype:csv OR filetype:json'
+    severity: critical
+    tippss: [Privacy, Protection, Safety]
+    description: >
+      Genomic data is permanently identifying and subject to GINA protections.
+      AI systems trained on genomic data in healthcare represent high-sensitivity targets.
+    remediation: Immediately restrict access. Assess GINA compliance. Consult legal team.
