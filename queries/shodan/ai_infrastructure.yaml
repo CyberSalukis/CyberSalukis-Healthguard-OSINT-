@@ -1,0 +1,87 @@
+# CyberSalukis HealthGuard OSINT
+# Shodan Query Library — AI Infrastructure Discovery
+# Tested: June 2026
+#
+# AUTHORIZED USE ONLY
+
+queries:
+
+  - title: "vLLM Inference Server"
+    query: "port:8000 http.title:vllm"
+    description: vLLM high-throughput LLM serving endpoint. Unauthenticated access allows unrestricted inference.
+    severity: critical
+    tippss: [Identity, Protection, Security]
+    remediation: Require API key auth. Restrict to internal network.
+
+  - title: "LM Studio Local API Server"
+    query: "port:1234 http.html:lmstudio"
+    description: LM Studio local AI model API. Accidental public exposure common in dev/test environments.
+    severity: high
+    tippss: [Identity, Protection, Security]
+    remediation: Bind to localhost only. Never expose on public or clinical networks.
+
+  - title: "LocalAI Server Exposed"
+    query: "port:8080 http.html:localai"
+    description: LocalAI OpenAI-compatible local inference server. PHI risk if processing clinical data.
+    severity: high
+    tippss: [Identity, Protection, Security]
+    remediation: Restrict to localhost. Require authentication if network access needed.
+
+  - title: "ChromaDB Vector Store Exposed"
+    query: "port:8000 http.html:chromadb OR http.html:chroma"
+    description: >
+      ChromaDB vector database. Commonly used in LangChain/LlamaIndex RAG systems for healthcare AI.
+      Unauthenticated access exposes all stored document embeddings and metadata.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable ChromaDB authentication. Restrict to internal network. Audit for PHI content.
+
+  - title: "MLflow Model Registry Exposed"
+    query: "port:5000 http.title:MLflow"
+    description: >
+      MLflow experiment tracking and model registry. Exposed instances reveal AI model
+      lineage, training metrics, hyperparameters, and may provide model download access.
+    severity: high
+    tippss: [Trust, Protection, Security]
+    remediation: Enable MLflow authentication. Restrict to internal network.
+
+  - title: "Ray Serve AI Deployment Cluster"
+    query: "port:8265 http.title:Ray"
+    description: Ray distributed computing dashboard. Exposure reveals AI workload details and may allow job submission.
+    severity: high
+    tippss: [Protection, Security]
+    remediation: Restrict Ray dashboard to internal network. Enable authentication.
+
+  - title: "BentoML Model Serving API"
+    query: "port:3000 http.html:bentoml OR port:3000 http.title:BentoML"
+    description: BentoML model serving endpoint. Unauthenticated AI model inference access.
+    severity: high
+    tippss: [Identity, Protection, Security]
+    remediation: Implement API key authentication. Restrict network access.
+
+  - title: "Milvus Vector Database Exposed"
+    query: "port:19530"
+    description: >
+      Milvus vector database port. Used in large-scale healthcare AI RAG deployments.
+      Unauthenticated access exposes all vector collections including clinical document embeddings.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable Milvus authentication. Apply network access controls.
+
+  - title: "MinIO Object Storage — AI Data"
+    query: "port:9000 http.title:MinIO"
+    description: >
+      MinIO S3-compatible object storage. Commonly used to store AI training data,
+      model weights, and output files in healthcare AI pipelines. Public access risk.
+    severity: high
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable MinIO authentication. Audit bucket policies. Restrict public access.
+
+  - title: "Apache Airflow — AI Pipeline Orchestration"
+    query: "port:8080 http.title:Airflow"
+    description: >
+      Apache Airflow workflow orchestration. In healthcare AI context, orchestrates
+      data pipelines that may process PHI. Exposed admin interface allows DAG manipulation.
+    severity: high
+    tippss: [Identity, Protection, Security]
+    remediation: Enable Airflow authentication. Restrict to internal network. Audit DAGs for PHI handling.
