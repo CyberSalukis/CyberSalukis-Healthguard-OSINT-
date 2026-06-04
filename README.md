@@ -1,17 +1,17 @@
-# CyberSalukis HealthGuard OSINT
+# IEEE CyberSalukis HealthGuard OSINT
 
 **An Open-Source Digital Public Good (DPG) — Automated OSINT Reconnaissance Framework for Healthcare AI Security**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-green.svg)](https://python.org)
 [![DPG](https://img.shields.io/badge/Digital%20Public%20Good-DPG-purple.svg)](https://digitalpublicgoods.net)
-[![CyberSalukis Cybersecurity Hackathon 2026](https://img.shields.io/badge/CyberSalukis-Cybersecurity%20Hackathon%202026-orange.svg)](https://cybersalukis.org)
+[![IEEE SA Cybersecurity Hackathon 2026](https://img.shields.io/badge/IEEE%20SA-Cybersecurity%20Hackathon%202026-orange.svg)](https://ieee.org)
 
 ---
 
 ## Overview
 
-**CyberSalukis HealthGuard OSINT** is the first open-source OSINT framework purpose-built for identifying, mapping, and reducing the AI attack surface of healthcare organizations. It is designed as a **Digital Public Good (DPG)** — free, open, and accessible to all health systems globally, including resource-constrained community hospitals, rural health systems, and public health agencies.
+**IEEE CyberSalukis HealthGuard OSINT** is the first open-source OSINT framework purpose-built for identifying, mapping, and reducing the AI attack surface of healthcare organizations. It is designed as a **Digital Public Good (DPG)** — free, open, and accessible to all health systems globally, including resource-constrained community hospitals, rural health systems, and public health agencies.
 
 Healthcare organizations are deploying AI models, LLMs, agentic AI systems, and AI-connected IoT devices at an unprecedented pace. Most lack a structured, automated process for understanding what parts of those systems are externally discoverable, exposed, or vulnerable through open-source intelligence. This framework closes that gap.
 
@@ -60,8 +60,8 @@ All findings are mapped to the **TIPPSS** security framework:
 ### Installation
 
 ```bash
-git clone https://github.com/CyberSalukis/CyberSalukis-Healthguard-OSINT-.git
-cd CyberSalukis-Healthguard-OSINT-
+git clone https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT.git
+cd IEEE-CyberSalukis-HealthGuard-OSINT
 pip install -r requirements.txt
 cp config/config.example.yaml config/config.yaml
 # Edit config/config.yaml with your API keys
@@ -102,7 +102,7 @@ HealthGuard OSINT produces:
 ### Sample Report Structure
 
 ```
-CyberSalukis HealthGuard OSINT — Attack Surface Assessment
+IEEE CyberSalukis HealthGuard OSINT — Attack Surface Assessment
 Target: [Organization Name]
 Assessment Date: [Date]
 Modules Run: [List]
@@ -133,7 +133,7 @@ DETAILED FINDINGS
 ## Repository Structure
 
 ```
-CyberSalukis-Healthguard-OSINT-/
+IEEE-CyberSalukis-HealthGuard-OSINT/
 ├── healthguard.py              # Main entry point
 ├── requirements.txt            # Python dependencies
 ├── Dockerfile                  # Container deployment
@@ -146,9 +146,6 @@ CyberSalukis-Healthguard-OSINT-/
 │   │   ├── llm_recon.py
 │   │   ├── github_intel.py
 │   │   ├── shodan_scan.py
-│   │   ├── censys_scan.py
-│   │   ├── ivre_recon.py
-│   │   ├── leakix_scan.py
 │   │   ├── vendor_intel.py
 │   │   └── social_recon.py
 │   ├── utils/
@@ -199,7 +196,7 @@ CyberSalukis-Healthguard-OSINT-/
 - Review your jurisdiction's computer access laws before use
 - See [RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md) for full policy
 
-**Misuse of this framework against systems without authorization is illegal and unethical. The CyberSalukis team and contributors bear no responsibility for unauthorized use.**
+**Misuse of this framework against systems without authorization is illegal and unethical. The IEEE CyberSalukis team and contributors bear no responsibility for unauthorized use.**
 
 ---
 
@@ -218,7 +215,7 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 
 ## Team
 
-**CyberSalukis** — CyberSalukis IEEE Cybersecurity Hackathon 2026
+**IEEE CyberSalukis** — IEEE SA Cybersecurity Hackathon 2026
 
 ---
 

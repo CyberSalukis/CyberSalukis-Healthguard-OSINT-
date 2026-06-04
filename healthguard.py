@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-CyberSalukis HealthGuard OSINT
-===============================
+IEEE CyberSalukis HealthGuard OSINT
+====================================
 Open-Source Digital Public Good (DPG)
 Automated OSINT Reconnaissance Framework for Healthcare AI Security
 
-CyberSalukis Cybersecurity Hackathon 2026
-Team: CyberSalukis
+IEEE SA Cybersecurity Hackathon 2026
+Team: IEEE CyberSalukis
 
 Usage:
     python healthguard.py --target "Memorial Hospital" --domain memorialhospital.org --all-modules
@@ -43,11 +43,11 @@ console = Console()
 
 BANNER = """
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║          CyberSalukis HealthGuard OSINT                                    ║
+║          IEEE CyberSalukis HealthGuard OSINT                               ║
 ║          Open-Source Digital Public Good (DPG)                             ║
 ║          Healthcare AI Attack Surface Reconnaissance Framework             ║
 ║                                                                            ║
-║          CyberSalukis Cybersecurity Hackathon 2026                         ║
+║          IEEE SA Cybersecurity Hackathon 2026                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
   ⚠  AUTHORIZED USE ONLY — Passive OSINT against systems you own or have
@@ -85,7 +85,7 @@ MODULE_MAP = {
 @click.option("--quiet",    "-q", is_flag=True, default=False, help="Suppress banner and progress output")
 def main(target, domain, module, all_modules, report, input, output, format, config, verbose, quiet):
     """
-    CyberSalukis HealthGuard OSINT — Healthcare AI Attack Surface Reconnaissance
+    IEEE CyberSalukis HealthGuard OSINT — Healthcare AI Attack Surface Reconnaissance
 
     Run OSINT reconnaissance against healthcare AI deployments to discover
     externally visible attack surface before adversaries do.

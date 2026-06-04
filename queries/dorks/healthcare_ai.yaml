@@ -1,4 +1,4 @@
-# CyberSalukis HealthGuard OSINT
+# IEEE CyberSalukis HealthGuard OSINT
 # Healthcare AI Google Dork Library
 # Category: General Healthcare AI Exposure
 # Tested: June 2026
@@ -177,7 +177,7 @@ dorks:
       Disable public blob access at account level.
       Implement Azure Policy to enforce storage security baseline.
 
-  # ── GitHub / Code Repositories ────────────────────────────────���─────────────────
+  # ── GitHub / Code Repositories ──────────────────────────────────────────────────
 
   - title: "GitHub Repository — Healthcare AI Code"
     query: 'site:github.com "{target}" "openai" OR "anthropic" OR "langchain" "healthcare" OR "clinical" OR "EHR" OR "HIPAA"'

@@ -1,0 +1,81 @@
+# IEEE CyberSalukis HealthGuard OSINT
+# Configuration Template
+# Copy to config.yaml and fill in your API keys
+#
+# SECURITY: Never commit config.yaml to version control.
+# config.yaml is in .gitignore by default.
+# Use environment variables as an alternative (see README).
+
+api_keys:
+  # Shodan — Free account sufficient for basic queries
+  # Register: https://account.shodan.io/register
+  shodan: "YOUR_SHODAN_API_KEY"
+
+  # Google Custom Search Engine
+  # Setup: https://programmablesearchengine.google.com/
+  # API key: https://developers.google.com/custom-search/v1/introduction
+  # Free tier: 100 queries/day
+  google_cse_api_key: "YOUR_GOOGLE_API_KEY"
+  google_cse_cx: "YOUR_SEARCH_ENGINE_ID"
+
+  # Bing Web Search API (Microsoft Azure)
+  # Free tier: 1,000 queries/month
+  # Sign up: https://azure.microsoft.com/en-us/services/cognitive-services/bing-web-search-api/
+  # Different index from Google — surfaces Microsoft/Azure/SharePoint content well
+  bing_api_key: "YOUR_BING_API_KEY"
+
+  # Brave Search API — Fully independent index (no Google/Bing underneath)
+  # Free tier: 2,000 queries/month
+  # Sign up: https://brave.com/search/api/
+  # Recommended for DPG-aligned deployments and genuine index diversity
+  brave_api_key: "YOUR_BRAVE_API_KEY"
+
+  # Mojeek Search API — Privacy-focused, independent crawler
+  # Free tier available
+  # Sign up: https://www.mojeek.com/services/search/web-search-api/
+  # No Big Tech index dependency — surfaces unique results
+  mojeek_api_key: "YOUR_MOJEEK_API_KEY"
+
+  # GitHub Personal Access Token (public repo read access is sufficient)
+  # Create: https://github.com/settings/tokens
+  # Required scope: public_repo (read:public_repo)
+  github_token: "YOUR_GITHUB_TOKEN"
+
+  # Censys (optional — enhances infrastructure discovery)
+  # Register: https://search.censys.io/register
+  censys_api_id: "YOUR_CENSYS_API_ID"
+  censys_api_secret: "YOUR_CENSYS_SECRET"
+
+  # LeakIX — Focused on confirmed data leaks and exposed services
+  # Register: https://leakix.net (free tier available)
+  leakix_api_key: "YOUR_LEAKIX_API_KEY"
+
+# IVRE (Open Source — no API key required for web API, self-hosted for full power)
+# Install: pip install ivre | GitHub: https://github.com/ivre/ivre
+ivre:
+  web_url: "https://ivre.rocks/cgi-bin/view.py"  # Default: public IVRE web API
+  use_local_cli: false  # Set true if IVRE is installed locally
+
+rate_limits:
+  # Google CSE free tier: 100 queries/day
+  google_requests_per_day: 100
+  # Shodan free tier: 1 request/second
+  shodan_requests_per_second: 1
+  # GitHub unauthenticated: 10 requests/min; authenticated: 30/min
+  github_requests_per_hour: 30
+  # Seconds to wait between requests (be respectful of rate limits)
+  delay_between_requests: 2.0
+
+scope:
+  # Maximum search results per query (Google CSE max: 10)
+  max_results_per_query: 10
+  # Maximum GitHub repositories to analyze
+  max_github_repos: 20
+  # Passive ONLY mode — no active probing (recommended for initial assessments)
+  passive_only: false
+
+output:
+  # Include raw API response URLs in findings
+  include_raw_urls: true
+  # Minimum severity to include in reports: critical, high, medium, low, info
+  severity_threshold: "info"

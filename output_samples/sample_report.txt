@@ -1,0 +1,657 @@
+================================================================================
+  IEEE CyberSalukis HealthGuard OSINT
+  Healthcare AI Attack Surface Assessment — Full Report
+  Open-Source Digital Public Good (DPG)
+  IEEE SA Cybersecurity Hackathon 2026
+================================================================================
+
+  Organization    :  Example Regional Medical Center (ERMC)
+  Domain Assessed :  example-rmc.org
+  Assessment Date :  June 2, 2026
+  Report ID       :  ERMC-2026-0602-001
+  Prepared By     :  IEEE CyberSalukis HealthGuard OSINT Framework v1.0
+  Modules Run     :  dork-scan, llm-recon, github-intel, shodan-scan,
+                     censys-scan, ivre-recon, leakix-scan,
+                     vendor-intel, social-recon
+  Total Findings  :  24
+
+================================================================================
+  ⚠  HANDLING NOTICE
+================================================================================
+
+  This report contains sensitive security information about Example Regional
+  Medical Center's AI infrastructure. Distribution should be limited to:
+
+    • Chief Information Security Officer (CISO)
+    • Chief Information Officer (CIO)
+    • Chief Medical Information Officer (CMIO)
+    • Compliance Officer
+    • Legal Counsel (as needed)
+    • Authorized security personnel only
+
+  DO NOT distribute externally, post to shared drives, or send via unencrypted
+  email. This report should be treated as CONFIDENTIAL.
+
+================================================================================
+  SECTION 1 — PLAIN LANGUAGE EXECUTIVE SUMMARY
+  For: C-Suite, Clinical Leadership, Compliance Officers
+================================================================================
+
+  WHAT THIS ASSESSMENT FOUND
+  ──────────────────────────
+  Using the same publicly available tools and techniques that a cybercriminal
+  would use before launching an attack, this assessment examined what
+  information about Example Regional Medical Center's AI systems is visible
+  from the open internet — without logging in to any system or accessing
+  any private data.
+
+  The results require immediate attention.
+
+  The assessment found 24 security concerns across ERMC's AI systems,
+  including 4 issues that represent an immediate and serious risk to patient
+  data, clinical operations, and regulatory compliance.
+
+  WHAT IS AT RISK — IN PLAIN TERMS
+  ─────────────────────────────────
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  PATIENT DATA        A file containing patient records was found        │
+  │                      publicly accessible on an internet storage         │
+  │                      server. Anyone with internet access could          │
+  │                      download it. This is a potential HIPAA breach.     │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │  AI SYSTEM ACCESS    A password key for ERMC's AI system was found      │
+  │                      posted in a public code repository. Anyone who     │
+  │                      found it could use ERMC's AI tools at ERMC's       │
+  │                      expense or access clinical AI data.                │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │  CLINICAL AI TOOL    ERMC's AI language model server is accessible      │
+  │  EXPOSED             from the open internet without a password.         │
+  │                      An outsider could query it, manipulate it, or      │
+  │                      attempt to extract information from it.            │
+  ├─────────────────────────────────────────────────────────────────────────┤
+  │  DEVELOPMENT SERVER  A technical workspace containing AI code and       │
+  │  OPEN                possibly patient data samples is accessible        │
+  │                      from the internet without authentication.          │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  WHY THIS MATTERS NOW
+  ────────────────────
+  Healthcare organizations are the most targeted sector for cyberattacks.
+  The average cost of a healthcare data breach is $10.9 million. In 2025,
+  an AI system breach at a New York health system exposed 483,000 patients'
+  records including Social Security numbers and medical information.
+
+  The issues found in this assessment are the types of exposures that
+  adversaries actively search for before launching ransomware attacks,
+  data theft operations, and targeted social engineering campaigns against
+  clinical staff.
+
+  REGULATORY EXPOSURE
+  ───────────────────
+  Several findings in this report may trigger HIPAA breach notification
+  obligations. Legal counsel and the Compliance Officer should review
+  Section 3 of this report immediately.
+
+  OVERALL RISK RATING
+  ───────────────────
+
+        ╔══════════════════════════════════════╗
+        ║                                      ║
+        ║   OVERALL RISK:   ██ CRITICAL ██     ║
+        ║                                      ║
+        ║   Immediate action required on       ║
+        ║   4 findings before end of day.      ║
+        ║                                      ║
+        ╚══════════════════════════════════════╝
+
+================================================================================
+  SECTION 2 — RISK DASHBOARD
+  For: Security Team, CISO, CIO
+================================================================================
+
+  FINDING COUNT BY SEVERITY
+  ──────────────────────────
+  What these levels mean:
+
+  CRITICAL  An active, immediate threat. Attackers can exploit this today.
+            Breach notification obligations may already apply.
+
+  HIGH      A significant vulnerability. Exploitation is likely if not
+            addressed within days. Escalating risk over time.
+
+  MEDIUM    A meaningful security gap. Should be addressed within 30 days
+            as part of a prioritized remediation plan.
+
+  LOW       An informational risk indicator. Low direct threat but
+            contributes to the overall attack surface. Address within
+            90 days.
+
+  INFO      No direct risk. Documented for awareness, monitoring, and
+            future assessment baseline.
+
+  ┌──────────────┬───────┬────────────────────────────────────────────────┐
+  │  Severity    │ Count │ Visual                                         │
+  ├──────────────┼───────┼────────────────────────────────────────────────┤
+  │  CRITICAL    │   4   │  ████████████████                              │
+  │  HIGH        │   8   │  ████████████████████████████████              │
+  │  MEDIUM      │   7   │  ████████████████████████████                  │
+  │  LOW         │   3   │  ████████████                                  │
+  │  INFO        │   2   │  ████████                                      │
+  ├──────────────┼───────┼────────────────────────────────────────────────┤
+  │  TOTAL       │  24   │                                                │
+  └──────────────┴───────┴────────────────────────────────────────────────┘
+
+  TIPPSS FRAMEWORK RISK MAPPING
+  ──────────────────────────────
+  TIPPSS is a healthcare-specific security framework that maps risks to
+  six dimensions of trustworthy AI deployment. Each finding in this
+  report is tagged to one or more of the following categories:
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │  [T] TRUST       6 findings                                         │
+  │      Are ERMC's AI systems governed, transparent, and trustworthy?  │
+  │      Findings here indicate gaps in AI policy, vendor oversight,    │
+  │      and governance documentation visible to adversaries.           │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │  [I] IDENTITY    9 findings  ◄ HIGHEST COUNT                        │
+  │      Are ERMC's AI systems properly secured with authentication?    │
+  │      Findings here include exposed API keys, unauthenticated        │
+  │      AI interfaces, and credential leakage — the #1 initial         │
+  │      access vector for healthcare AI breaches.                      │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │  [P] PRIVACY     5 findings                                         │
+  │      Is patient data protected from unauthorized AI access?         │
+  │      Findings here involve PHI exposure, training data leakage,     │
+  │      and AI systems handling patient data without controls.         │
+  │      HIPAA implications apply to this category.                     │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │  [P] PROTECTION  8 findings                                         │
+  │      Are technical controls in place to defend AI systems?          │
+  │      Findings here cover misconfigured endpoints, missing           │
+  │      encryption, and exposed administrative interfaces.             │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │  [S] SAFETY      4 findings                                         │
+  │      Could a compromised AI system harm patients?                   │
+  │      Findings here include clinical AI interfaces exposed to        │
+  │      manipulation, prompt injection surfaces, and connected         │
+  │      medical IoT devices accessible from the internet.             │
+  ├──────────────────────────────────────────────────────────────────────┤
+  │  [S] SECURITY   18 findings  ◄ BROADEST COVERAGE                   │
+  │      How wide is ERMC's AI attack surface overall?                  │
+  │      Findings here aggregate the full externally-visible threat     │
+  │      landscape including supply chain, social engineering, and      │
+  │      adversarial targeting indicators.                              │
+  └──────────────────────────────────────────────────────────────────────┘
+
+  FINDINGS BY ASSESSMENT MODULE
+  ──────────────────────────────
+  ┌─────────────────────────────────┬───────┬──────────────────────────────┐
+  │  Module                         │ Finds │ What It Checked              │
+  ├─────────────────────────────────┼───────┼──────────────────────────────┤
+  │  Google Dork Scanner            │   6   │ Public search engine exposure │
+  │  LLM Vulnerability Recon        │   4   │ AI endpoint and prompt risks  │
+  │  GitHub Intelligence            │   3   │ Code repos and credentials    │
+  │  Shodan IoT Scanner             │   3   │ Internet-facing AI ports      │
+  │  Censys Infrastructure          │   2   │ Certificates and services     │
+  │  IVRE Network Recon             │   1   │ Open-source scan data         │
+  │  LeakIX Leak Detection          │   2   │ Confirmed data exposures      │
+  │  Vendor Supply Chain            │   2   │ Third-party AI relationships  │
+  │  Social Engineering Surface     │   1   │ Staff disclosure & job posts  │
+  └─────────────────────────────────┴───────┴──────────────────────────────┘
+
+================================================================================
+  SECTION 3 — IMMEDIATE ACTION REQUIRED (CRITICAL FINDINGS)
+  For: Security Team, CISO, Compliance Officer, Legal Counsel
+================================================================================
+
+  The following 4 findings require action before end of business today.
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  ██ CRITICAL #1 of 4 ██                                                │
+  │  Exposed Patient Data File in Cloud Storage                            │
+  │  Finding ID: dork-scan-0001  |  TIPPSS: Privacy, Protection, Security  │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  WHAT WAS FOUND (Plain Language):
+    A file containing patient information was found stored in a cloud
+    storage location (Amazon S3 bucket) that is publicly accessible —
+    meaning anyone on the internet can download it without logging in
+    or needing any credentials.
+
+  TECHNICAL DETAIL:
+    A Google dork search returned a publicly accessible CSV file at
+    s3://example-rmc-ai-data/training/patient_cohort_2024.csv
+    The file appears to be an AI model training dataset containing
+    patient identifiers, dates of birth, diagnoses, and medication data.
+
+  BUSINESS IMPACT:
+    → Potential HIPAA breach notification obligation (45 CFR §164.400)
+    → If 500 or more patients affected: HHS notification required within
+      60 days and media notification may be required
+    → Average cost of a healthcare data breach: $10.9 million
+    → Reputational damage if breach becomes public knowledge
+    → Possible OCR investigation and civil monetary penalties
+
+  WHO SHOULD ACT:
+    Security Team (immediate), Compliance Officer, Legal Counsel,
+    Privacy Officer
+
+  REMEDIATION STEPS:
+    1. Immediately make the S3 bucket private (AWS Console → Block
+       Public Access → Enable for this bucket)
+    2. Enable S3 access logging to determine if the file was accessed
+       and by whom
+    3. Preserve evidence — do not delete the file until legal counsel
+       advises (it may be needed for breach investigation)
+    4. Contact Legal Counsel and Privacy Officer TODAY to begin HIPAA
+       breach risk assessment
+    5. Conduct full audit of all S3 buckets for similar exposures
+    6. Implement AWS S3 Block Public Access at account level
+
+  RESPONSE DEADLINE:  IMMEDIATE — Today
+
+  ─────────────────────────────────────────────────────────────────────────
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  ██ CRITICAL #2 of 4 ██                                                │
+  │  AI System Password Key Exposed in Public Code Repository              │
+  │  Finding ID: github-intel-0001  |  TIPPSS: Identity, Security          │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  WHAT WAS FOUND (Plain Language):
+    A secret password key used to authenticate ERMC's AI system was found
+    posted in a publicly visible code repository on GitHub. This is
+    similar to leaving the master key to a building taped to the front
+    door — anyone who finds it can use it.
+
+  TECHNICAL DETAIL:
+    A GitHub code search returned an OpenAI API key (OPENAI_API_KEY)
+    committed in a .env configuration file in the repository
+    github.com/example-rmc/clinical-nlp. The key was present in the
+    repository's commit history and may have been accessible for an
+    unknown period of time.
+
+  BUSINESS IMPACT:
+    → Any person who found this key can use ERMC's AI services, billed
+      to ERMC's account — potentially incurring thousands of dollars
+      in unauthorized charges
+    → If the AI system was used to process patient data, the exposed
+      key may allow unauthorized access to patient query history
+    → The key may grant access to custom AI models fine-tuned on
+      ERMC clinical data
+    → GitHub indexes repositories continuously — the key may already
+      have been discovered and used
+
+  WHO SHOULD ACT:
+    Security Team (immediate), IT Leadership
+
+  REMEDIATION STEPS:
+    1. IMMEDIATELY rotate (replace) the exposed API key in the OpenAI
+       console — the old key will stop working and the risk is contained
+    2. Check OpenAI usage logs for any unauthorized API calls made
+       using the exposed key
+    3. Remove the key from the GitHub repository's entire commit history
+       (requires a tool called git-filter-repo — IT can perform this)
+    4. Enable GitHub secret scanning to prevent future key exposure
+    5. Store all API keys in a secure vault system going forward —
+       never in code files
+
+  RESPONSE DEADLINE:  IMMEDIATE — Within the hour if possible
+
+  ─────────────────────────────────────────────────────────────────────────
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  ██ CRITICAL #3 of 4 ██                                                │
+  │  Clinical AI System Accessible from Open Internet Without Password     │
+  │  Finding ID: shodan-scan-0001  |  TIPPSS: Identity, Protection,        │
+  │                                           Safety, Security             │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  WHAT WAS FOUND (Plain Language):
+    ERMC's AI language model server — the system that powers clinical AI
+    tools — is accessible from the open internet without requiring any
+    login or password. Anyone who knows the address can connect to it,
+    ask it questions, or attempt to manipulate it.
+
+  TECHNICAL DETAIL:
+    Shodan (an internet infrastructure search engine) reports port 11434
+    (Ollama LLM server) open and publicly accessible on IP 203.0.113.42
+    (hostname: ai.example-rmc.org). The Ollama API requires no
+    authentication by default. This port is listed publicly in Shodan's
+    index, meaning it is discoverable by any attacker using standard
+    reconnaissance tools.
+
+  BUSINESS IMPACT:
+    → Unauthorized parties can query ERMC's clinical AI system directly
+    → Attackers can attempt prompt injection — crafting inputs designed
+      to manipulate the AI into revealing confidential information or
+      producing harmful clinical guidance
+    → If the AI has access to patient scheduling, records, or clinical
+      decision support, manipulation of its outputs could affect patient
+      care
+    → The AI server may contain custom models trained on ERMC patient
+      data, which could be extracted
+
+  WHO SHOULD ACT:
+    Security Team, Network/Infrastructure Team (immediate)
+
+  REMEDIATION STEPS:
+    1. Configure the Ollama server to listen on localhost (127.0.0.1)
+       only — this takes one configuration change and immediately
+       closes the public exposure
+    2. If remote access to the AI server is required, place it behind
+       a VPN or authenticated reverse proxy (do not expose directly)
+    3. Review server access logs for any unauthorized connections
+    4. Conduct an audit of what data the AI server can access and
+       whether that access is appropriately restricted
+
+  RESPONSE DEADLINE:  TODAY — Before close of business
+
+  ─────────────────────────────────────────────────────────────────────────
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  ██ CRITICAL #4 of 4 ██                                                │
+  │  AI Development Workspace Open to Internet — Possible PHI Exposure     │
+  │  Finding ID: dork-scan-0002  |  TIPPSS: Identity, Privacy,             │
+  │                                          Protection, Security          │
+  └─────────────────────────────────────────────────────────────────────────┘
+
+  WHAT WAS FOUND (Plain Language):
+    A technical workspace where ERMC staff develop and test AI tools
+    (a Jupyter notebook server) is accessible from the open internet
+    without a password. These workspaces often contain patient data
+    samples, API credentials, and the code that powers ERMC's AI
+    systems.
+
+  TECHNICAL DETAIL:
+    A passive probe and Google dork search found a publicly accessible
+    Jupyter notebook server at jupyter.example-rmc.org (port 8888)
+    without authentication. The server's open directory listing was
+    visible, showing notebooks including clinical_model_v2.ipynb and
+    patient_cohort_analysis.ipynb — titles suggesting patient data
+    may be present in the workspace.
+
+  BUSINESS IMPACT:
+    → Full contents of the development workspace are readable and
+      downloadable by anyone on the internet
+    → Patient data in notebooks = potential HIPAA breach
+    → API keys and credentials found in notebook code can be used
+      to access ERMC systems
+    → Attackers can execute code on the server, potentially pivoting
+      to other ERMC systems
+
+  WHO SHOULD ACT:
+    Security Team, AI/Data Science Team (immediate)
+
+  REMEDIATION STEPS:
+    1. Immediately take the Jupyter server offline or block all
+       external access at the firewall
+    2. Enable Jupyter authentication (token or password) before
+       bringing it back online
+    3. Audit all notebook files for patient data and API credentials
+    4. Move all development environments to ERMC's internal network —
+       development servers should never be internet-facing
+    5. Assess whether any patient data in notebooks constitutes
+       a HIPAA breach requiring notification
+
+  RESPONSE DEADLINE:  TODAY — Before close of business
+
+================================================================================
+  SECTION 4 — HIGH PRIORITY FINDINGS (Remediate Within 7 Days)
+  For: Security Team, IT Leadership
+================================================================================
+
+  ┌──────┬──────────────────────────────────────────────────────┬────────────┐
+  │  #   │  Finding                                              │  TIPPSS   │
+  ├──────┼──────────────────────────────────────────────────────┼────────────┤
+  │  H1  │  Gradio AI demo interface at ai-demo.example-rmc.org  │  [I][P][P] │
+  │      │  accessible without authentication. May expose        │            │
+  │      │  clinical AI tools to unauthorized users.             │            │
+  │      │  ACTION: Enable authentication or take offline.       │            │
+  ├──────┼──────────────────────────────────────────────────────┼────────────┤
+  │  H2  │  Qdrant vector database (port 6333) open on          │  [P][P][S] │
+  │      │  ai.example-rmc.org. Vector databases store          │            │
+  │      │  embeddings of clinical documents for AI search.     │            │
+  │      │  ACTION: Enable authentication, restrict to LAN.     │            │
+  ├──────┼──────────────────────────────────────────────────────┼────────────┤
+  │  H3  │  Patient-facing AI chatbot at chat.example-rmc.org   │  [T][I][S] │
+  │      │  has no input validation. Vulnerable to prompt        │            │
+  │      │  injection — attackers can craft inputs to           │            │
+  │      │  manipulate AI responses or extract PHI.             │            │
+  │      │  ACTION: Implement prompt injection defenses.        │            │
+  ├──────┼──────────────────────────────────────────────────────┼────────────┤
+  │  H4  │  No HIPAA Business Associate Agreement (BAA)         │  [T][P][S] │
+  │      │  confirmed with Nuance/Microsoft DAX, which          │            │
+  │      │  processes physician dictation containing PHI.       │            │
+  │      │  ACTION: Confirm BAA status with Legal/Compliance.   │            │
+  ├──────┼──────────────────────────────────────────────────────┼────────────┤
+  │  H5  │  GitHub repository example-rmc/clinical-nlp is       │  [T][S][S] │
+  │      │  public and contains AI system architecture details  │            │
+  │      │  that could inform targeted attacks.                 │            │
+  │      │  ACTION: Make repository private or remove sensitive  │            │
+  │      │  architecture content.                               │            │
+  ├──────┼──────────────────────────────────────────────────────┼────────────┤
+  │  H6  │  LeakIX confirmed an exposed .env configuration file │  [I][S][S] │
+  │      │  at config.example-rmc.org containing database       │            │
+  │      │  connection strings. Credentials may be live.        │            │
+  │      │  ACTION: Remove file, rotate all credentials in it.  │            │
+  ├──────┼──────────────────────────────────────────────────────┼────────────┤
+  │  H7  │  Censys certificate transparency data reveals 3      │  [P][S][S] │
+  │      │  subdomains (llm.example-rmc.org,                    │            │
+  │      │  inference.example-rmc.org, aidev.example-rmc.org)   │            │
+  │      │  not visible in standard DNS. These hosts run        │            │
+  │      │  unauthenticated AI services.                        │            │
+  │      │  ACTION: Audit and secure all discovered subdomains. │            │
+  ├──────┼──────────────────────────────────────────────────────┼────────────┤
+  │  H8  │  IVRE open-source scan data confirms Redis cache     │  [P][P][S] │
+  │      │  (port 6379) open on internal-edge server. LLM      │            │
+  │      │  conversation sessions including PHI may be cached.  │            │
+  │      │  ACTION: Enable Redis AUTH. Restrict to LAN.        │            │
+  └──────┴──────────────────────────────────────────────────────┴────────────┘
+
+================================================================================
+  SECTION 5 — MEDIUM FINDINGS (Remediate Within 30 Days)
+  For: Security Team, IT Leadership
+================================================================================
+
+  M1  AI vendor procurement records publicly visible in 2 RFP documents
+      confirm relationships with Epic AI, Azure OpenAI, and Nuance DAX.
+      Supply chain visibility enables targeted vendor impersonation attacks.
+      ACTION: Review public document disclosure policies for AI vendor detail.
+      TIPPSS: [T][S]
+
+  M2  No public AI acceptable use policy or AI governance framework found
+      on example-rmc.org. Absence signals immature AI security posture to
+      potential adversaries and regulators.
+      ACTION: Develop and publish AI governance policy aligned with NIST AI RMF.
+      TIPPSS: [T][S]
+
+  M3  ERMC AI system architecture presentation from HIMSS 2025 is publicly
+      accessible as a PDF, disclosing Epic integration points, Azure deployment
+      architecture, and AI model identifiers.
+      ACTION: Review all conference materials for architecture disclosure
+              before future publication.
+      TIPPSS: [T][P][S]
+
+  M4  Third-party AI model dependency risk: ERMC relies on OpenAI and Azure
+      OpenAI cloud APIs for multiple clinical AI tools. Vendor breach,
+      service outage, or model update could affect clinical workflows without
+      internal controls in place.
+      ACTION: Develop AI vendor continuity plan. Evaluate on-premise
+              alternatives for highest-sensitivity use cases.
+      TIPPSS: [T][P][S]
+
+  M5  System prompt content for ERMC's clinical AI assistant is partially
+      visible in a public-facing web interface source code, revealing
+      that the AI has access to the scheduling and documentation systems.
+      ACTION: Remove system prompt content from all client-side code.
+              Treat system prompts as sensitive configuration data.
+      TIPPSS: [T][I][S][S]
+
+  M6  Azure OpenAI endpoint URL format found in public GitHub repository
+      comment. While not a credential, the endpoint URL confirms ERMC's
+      Azure tenant structure and AI deployment region.
+      ACTION: Remove Azure endpoint references from public repositories.
+      TIPPSS: [I][S]
+
+  M7  Job posting on LinkedIn for "Clinical AI Integration Engineer" lists
+      specific AI platforms (GPT-4, LangChain, Epic FHIR API) providing
+      adversaries with a detailed technology inventory at no effort.
+      ACTION: Review all AI-related job postings for stack disclosure.
+              Use generic technology descriptions.
+      TIPPSS: [T][S]
+
+================================================================================
+  SECTION 6 — LOW AND INFORMATIONAL FINDINGS
+  For: Security Team (for awareness and tracking)
+================================================================================
+
+  L1  [LOW] Three ERMC nurses and one physician have LinkedIn posts
+      mentioning use of "AI scribe" and "ChatGPT" for clinical documentation.
+      Creates social engineering targeting surface.
+      ACTION: Include AI tool disclosure in staff social media training.
+
+  L2  [LOW] ERMC clinical informatics team presented "AI in the ED" at
+      a regional conference. Slide deck publicly accessible, mentions
+      specific triage AI vendor and model version.
+      ACTION: Obtain security review of external presentations going forward.
+
+  L3  [LOW] PubMed publication from ERMC researchers discloses training
+      data characteristics for a clinical NLP model, including patient
+      population size and data years. Useful for model inversion research.
+      ACTION: Review future publications for AI training data disclosure.
+
+  I1  [INFO] IVRE open-source network recon framework is available for
+      self-hosted deployment, providing continuous network scanning
+      capability at no cost. Recommended for ongoing AI attack surface
+      monitoring.
+      ACTION: Evaluate IVRE deployment for continuous monitoring program.
+
+  I2  [INFO] LeakIX plugin ElasticSearchOpenPlugin returned no results for
+      example-rmc.org at time of assessment. Continue monitoring.
+
+================================================================================
+  SECTION 7 — REMEDIATION TIMELINE SUMMARY
+  For: CISO, CIO, Project Management
+================================================================================
+
+  IMMEDIATE (Today — Before End of Business)
+  ────────────────────────────────────────────
+  □  Rotate exposed OpenAI API key (GitHub finding)
+  □  Make patient data S3 bucket private (PHI exposure)
+  □  Restrict Ollama server to localhost (open AI endpoint)
+  □  Take Jupyter notebook server offline or block external access
+  □  Notify Legal Counsel and Privacy Officer re: potential PHI breach
+  □  Begin HIPAA breach risk assessment
+
+  THIS WEEK (Within 7 Days)
+  ──────────────────────────
+  □  Implement authentication on Gradio AI demo interface
+  □  Restrict Qdrant vector database to internal network
+  □  Implement prompt injection defenses on patient chatbot
+  □  Confirm Nuance/Microsoft DAX HIPAA BAA status
+  □  Make example-rmc/clinical-nlp GitHub repository private
+  □  Remove exposed .env file and rotate all credentials within it
+  □  Audit and secure all subdomains found by Censys
+  □  Enable Redis authentication
+
+  THIS MONTH (Within 30 Days)
+  ─────────────────────────────
+  □  Review public procurement documents for AI vendor disclosure
+  □  Develop and publish AI acceptable use policy
+  □  Review all public conference materials for architecture detail
+  □  Develop AI vendor continuity plan
+  □  Remove system prompt from client-side code
+  □  Remove Azure endpoint references from public repositories
+  □  Review AI-related job postings for technology stack disclosure
+
+  WITHIN 90 DAYS
+  ───────────────
+  □  Implement AI security awareness training for clinical staff
+  □  Establish security review process for external AI presentations
+  □  Implement pre-publication review for AI research disclosures
+  □  Evaluate IVRE for continuous AI attack surface monitoring
+  □  Schedule next HealthGuard OSINT assessment
+
+================================================================================
+  SECTION 8 — COMPLIANCE AND REGULATORY IMPLICATIONS
+  For: Compliance Officer, Legal Counsel, Privacy Officer
+================================================================================
+
+  HIPAA CONSIDERATIONS
+  ─────────────────────
+  The following findings may trigger HIPAA obligations and should be
+  reviewed with Legal Counsel and the Privacy Officer immediately:
+
+  Finding DORK-SCAN-0001 (Patient data in public S3 bucket):
+  → A HIPAA Breach Risk Assessment is required under 45 CFR §164.402
+  → If breach is confirmed: notification to HHS required within 60 days
+  → If 500+ patients affected: media notification may be required
+  → If 500+ patients in a single state: state AG notification may apply
+  → Preserve all evidence and access logs
+
+  Finding GITHUB-INTEL-0001 (Exposed API key for AI system processing PHI):
+  → Assess whether the exposed key enabled unauthorized access to PHI
+  → If PHI was accessible via the exposed key: treat as potential breach
+  → Review AI system access logs for the period the key was exposed
+
+  Finding DORK-SCAN-0002 (Jupyter notebook with patient data):
+  → Assess whether notebooks contained de-identified or identifiable PHI
+  → Review notebook file modification and access history
+
+  NIST AI RMF ALIGNMENT
+  ──────────────────────
+  Multiple findings in this report indicate gaps in ERMC's AI Risk
+  Management Framework alignment, particularly in:
+  → GOVERN: Absence of public AI governance policy (Finding M2)
+  → MAP: No documented AI attack surface assessment process
+  → MEASURE: No evidence of regular AI security testing
+  → MANAGE: No documented AI incident response procedures
+
+  FDA AI/ML CONSIDERATIONS
+  ─────────────────────────
+  If any exposed AI systems constitute Software as a Medical Device (SaMD)
+  under FDA guidance, the cybersecurity incidents identified may require
+  reporting under FDA's cybersecurity guidance for medical devices
+  (21st Century Cures Act / FDA Cybersecurity Guidance 2023).
+
+================================================================================
+  SECTION 9 — ASSESSMENT METHODOLOGY NOTE
+  For: All Stakeholders
+================================================================================
+
+  HOW THIS ASSESSMENT WAS CONDUCTED
+  ────────────────────────────────────
+  This assessment used only passive, publicly available open-source
+  intelligence (OSINT) techniques. No systems were compromised, no
+  credentials were used, and no unauthorized access was performed.
+
+  All information in this report was obtained from:
+  • Public internet search engines (Google)
+  • Public code repositories (GitHub)
+  • Public internet infrastructure databases (Shodan, Censys)
+  • Open-source network scan data (IVRE)
+  • Public data leak indexes (LeakIX)
+  • Public professional networks (LinkedIn, via Google)
+  • Public procurement and conference records
+
+  This is exactly the information a cybercriminal conducting
+  reconnaissance against ERMC would collect before launching an attack.
+  The goal of this assessment is to find it first.
+
+  TOOL USED
+  ──────────
+  IEEE CyberSalukis HealthGuard OSINT v1.0
+  Open-Source Digital Public Good (DPG)
+  MIT License
+  IEEE SA Cybersecurity Hackathon 2026
+  https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT
+
+================================================================================
+  IEEE CyberSalukis HealthGuard OSINT — Digital Public Good (DPG)
+  IEEE SA Cybersecurity Hackathon 2026
+  Report Generated: 2026-06-02 14:35:00 UTC
+  Report ID: ERMC-2026-0602-001
+  Framework: https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT
+  License: MIT | DPG Standard Compliant
+================================================================================

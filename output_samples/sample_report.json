@@ -1,0 +1,407 @@
+{
+  "report_meta": {
+    "framework": "IEEE CyberSalukis HealthGuard OSINT",
+    "version": "1.0.0",
+    "type": "Healthcare AI Attack Surface Assessment",
+    "report_id": "ERMC-2026-0602-001",
+    "dpg": true,
+    "license": "MIT",
+    "generated": "2026-06-02T14:35:00Z",
+    "repository": "https://github.com/[YOUR-ORG]/IEEE-CyberSalukis-HealthGuard-OSINT"
+  },
+  "assessment": {
+    "target_organization": "Example Regional Medical Center",
+    "target_domain": "example-rmc.org",
+    "assessment_timestamp": "2026-06-02T14:30:22Z",
+    "session_id": "example-rmc.org_20260602_143022",
+    "modules_run": [
+      "dork-scan",
+      "llm-recon",
+      "github-intel",
+      "shodan-scan",
+      "censys-scan",
+      "ivre-recon",
+      "leakix-scan",
+      "vendor-intel",
+      "social-recon"
+    ],
+    "assessment_type": "passive_osint",
+    "authorized": true
+  },
+  "summary": {
+    "total_findings": 24,
+    "overall_risk_level": "critical",
+    "by_severity": {
+      "critical": 4,
+      "high": 8,
+      "medium": 7,
+      "low": 3,
+      "info": 2
+    },
+    "by_tippss": {
+      "Trust": 6,
+      "Identity": 9,
+      "Privacy": 5,
+      "Protection": 8,
+      "Safety": 4,
+      "Security": 18
+    },
+    "by_module": {
+      "dork-scan": 6,
+      "llm-recon": 4,
+      "github-intel": 3,
+      "shodan-scan": 3,
+      "censys-scan": 2,
+      "ivre-recon": 1,
+      "leakix-scan": 2,
+      "vendor-intel": 2,
+      "social-recon": 1
+    },
+    "hipaa_review_required": true,
+    "immediate_action_required": true,
+    "findings_requiring_legal_review": [
+      "dork-scan-0001",
+      "github-intel-0001",
+      "dork-scan-0002"
+    ]
+  },
+  "findings": [
+    {
+      "id": "dork-scan-0001",
+      "module": "dork-scan",
+      "source": "Google Custom Search",
+      "query": "site:s3.amazonaws.com \"example regional medical\" patient OR clinical OR training filetype:csv",
+      "url": "https://s3.amazonaws.com/example-rmc-ai-data/training/patient_cohort_2024.csv",
+      "title": "Patient Data File in Public S3 Bucket",
+      "description": "A publicly accessible CSV file was found in an Amazon S3 bucket associated with Example Regional Medical Center. The filename (patient_cohort_2024.csv) and directory path (/training/) indicate this is an AI model training dataset containing patient information. The file is downloadable by anyone on the internet without credentials.",
+      "plain_language_summary": "A patient data file is publicly accessible on the internet and can be downloaded by anyone without a password. This is a potential HIPAA breach.",
+      "severity": "critical",
+      "tippss": ["Privacy", "Protection", "Security"],
+      "tippss_plain": {
+        "Privacy": "Patient health information may be exposed to unauthorized parties",
+        "Protection": "Cloud storage was not configured with required access controls",
+        "Security": "This exposure is the type adversaries actively search for"
+      },
+      "business_impact": [
+        "Potential HIPAA breach notification obligation",
+        "HHS/OCR notification required within 60 days if breach confirmed",
+        "Average healthcare breach cost: $10.9 million",
+        "Reputational damage if breach becomes public"
+      ],
+      "regulatory_implications": [
+        "HIPAA Breach Notification Rule (45 CFR §164.400)",
+        "HIPAA Security Rule (45 CFR §164.312)",
+        "State data breach notification laws may apply"
+      ],
+      "remediation": "Immediately make the S3 bucket private. Enable access logging to determine if the file was accessed. Contact Legal Counsel and Privacy Officer today. Begin HIPAA breach risk assessment. Conduct full audit of all S3 buckets.",
+      "remediation_steps": [
+        "Set S3 bucket to private via AWS Console immediately",
+        "Enable S3 access logging and review for prior access",
+        "Preserve evidence — do not delete until legal advises",
+        "Notify Legal Counsel and Privacy Officer today",
+        "Begin HIPAA Breach Risk Assessment (45 CFR §164.402)",
+        "Audit all S3 buckets for similar exposures",
+        "Enable AWS S3 Block Public Access at account level"
+      ],
+      "response_deadline": "immediate",
+      "response_deadline_plain": "Today — before end of business",
+      "hipaa_review_required": true,
+      "timestamp": "2026-06-02T14:31:12Z",
+      "raw": {
+        "bucket": "example-rmc-ai-data",
+        "path": "/training/patient_cohort_2024.csv",
+        "accessible": true,
+        "source": "Google Custom Search"
+      }
+    },
+    {
+      "id": "github-intel-0001",
+      "module": "github-intel",
+      "source": "GitHub Code Search",
+      "query": "site:github.com \"example regional medical\" OPENAI_API_KEY filename:.env",
+      "url": "https://github.com/example-rmc/clinical-nlp/blob/main/.env",
+      "title": "OpenAI API Key Exposed in Public GitHub Repository",
+      "description": "A GitHub code search found an OpenAI API key committed in a .env configuration file in the public repository example-rmc/clinical-nlp. The key is present in the repository's commit history and may have been accessible for an unknown period. Exposed API keys enable unauthorized AI model access billed to ERMC's account and potential access to any models fine-tuned on clinical data.",
+      "plain_language_summary": "A secret password key for ERMC's AI system was found posted in a public code repository. Anyone who found it could use ERMC's AI system at ERMC's expense or access clinical AI data.",
+      "severity": "critical",
+      "tippss": ["Identity", "Security"],
+      "tippss_plain": {
+        "Identity": "A credential allowing AI system access has been exposed publicly",
+        "Security": "This type of credential exposure is actively scanned for by automated tools"
+      },
+      "business_impact": [
+        "Unauthorized access to ERMC's AI services billed to ERMC's account",
+        "Potential access to clinical AI models and query history",
+        "Compromised key may already have been used by adversaries",
+        "Possible access to patient data processed through the AI system"
+      ],
+      "regulatory_implications": [
+        "If AI system processed PHI with exposed key: potential HIPAA breach",
+        "Review AI system access logs for unauthorized PHI access"
+      ],
+      "remediation": "Immediately rotate the exposed API key in the OpenAI console. Review usage logs for unauthorized access. Remove key from repository history using git-filter-repo. Enable GitHub secret scanning.",
+      "remediation_steps": [
+        "Rotate API key immediately via OpenAI console",
+        "Review OpenAI usage logs for unauthorized calls",
+        "Remove key from full Git history using git-filter-repo",
+        "Enable GitHub secret scanning and push protection",
+        "Implement pre-commit hooks (detect-secrets or gitleaks)",
+        "Migrate all secrets to a vault solution (AWS Secrets Manager, HashiCorp Vault)"
+      ],
+      "response_deadline": "immediate",
+      "response_deadline_plain": "Within the hour if possible",
+      "hipaa_review_required": true,
+      "timestamp": "2026-06-02T14:31:45Z",
+      "raw": {
+        "repository": "example-rmc/clinical-nlp",
+        "file": ".env",
+        "pattern": "OPENAI_API_KEY"
+      }
+    },
+    {
+      "id": "shodan-scan-0001",
+      "module": "shodan-scan",
+      "source": "Shodan Host Lookup",
+      "query": "Shodan host lookup: 203.0.113.42",
+      "url": "https://www.shodan.io/host/203.0.113.42",
+      "title": "Clinical AI Language Model Server Accessible from Open Internet",
+      "description": "Shodan's internet infrastructure index reports port 11434 (Ollama LLM server) open and publicly accessible on 203.0.113.42, which resolves to ai.example-rmc.org. The Ollama API does not require authentication by default. This server is listed in Shodan's public index, making it discoverable by any attacker running standard reconnaissance. The server may host custom clinical AI models accessible without credentials.",
+      "plain_language_summary": "ERMC's clinical AI system is accessible from the open internet without requiring any login. Anyone who finds it can query it, attempt to manipulate it, or try to extract information from it.",
+      "severity": "critical",
+      "tippss": ["Identity", "Protection", "Safety", "Security"],
+      "tippss_plain": {
+        "Identity": "The AI system has no authentication controlling who can access it",
+        "Protection": "The service is exposed with no access controls",
+        "Safety": "An accessible clinical AI system can be manipulated to affect patient care",
+        "Security": "The exposure is publicly indexed and discoverable by attackers"
+      },
+      "business_impact": [
+        "Unauthorized parties can query ERMC's clinical AI system directly",
+        "Prompt injection attacks could manipulate clinical AI responses",
+        "Custom clinical models may be extractable",
+        "Could serve as entry point to broader ERMC network"
+      ],
+      "regulatory_implications": [
+        "If AI has access to PHI: unauthenticated access = potential HIPAA breach",
+        "FDA cybersecurity guidance applies if system constitutes SaMD"
+      ],
+      "remediation": "Configure Ollama server to listen on localhost only. Place behind VPN or authenticated reverse proxy if remote access required. Review access logs for unauthorized connections.",
+      "remediation_steps": [
+        "Set Ollama to bind to 127.0.0.1 only in configuration",
+        "Block port 11434 at firewall for all external traffic",
+        "If remote access needed: deploy authenticated reverse proxy",
+        "Review server access logs for prior unauthorized connections",
+        "Audit what data and systems the AI server can access"
+      ],
+      "response_deadline": "today",
+      "response_deadline_plain": "Today — before close of business",
+      "hipaa_review_required": false,
+      "timestamp": "2026-06-02T14:33:12Z",
+      "raw": {
+        "ip": "203.0.113.42",
+        "hostname": "ai.example-rmc.org",
+        "port": 11434,
+        "service": "Ollama LLM Server",
+        "authenticated": false,
+        "shodan_indexed": true
+      }
+    },
+    {
+      "id": "dork-scan-0002",
+      "module": "dork-scan",
+      "source": "Google Custom Search + Passive HTTP Probe",
+      "query": "site:example-rmc.org inurl:jupyter OR inurl:notebook patient OR clinical OR PHI",
+      "url": "http://jupyter.example-rmc.org:8888",
+      "title": "AI Development Workspace (Jupyter Notebook) Open to Internet",
+      "description": "A Jupyter notebook server at jupyter.example-rmc.org is accessible from the internet without authentication. The server's directory listing reveals notebooks including clinical_model_v2.ipynb and patient_cohort_analysis.ipynb. Jupyter notebooks commonly contain patient data samples, API credentials, and implementation code for AI systems. Code execution may also be possible.",
+      "plain_language_summary": "A technical workspace where ERMC staff build AI tools is open to the internet without a password. It may contain patient data and system credentials.",
+      "severity": "critical",
+      "tippss": ["Identity", "Privacy", "Protection", "Security"],
+      "tippss_plain": {
+        "Identity": "The development server has no authentication",
+        "Privacy": "Patient data samples in notebooks may be exposed",
+        "Protection": "A development environment should never be internet-facing",
+        "Security": "Credentials in notebooks can be used to access other ERMC systems"
+      },
+      "business_impact": [
+        "Full notebook contents readable by anyone on the internet",
+        "Patient data in notebooks = potential HIPAA breach",
+        "API keys and credentials in code can access ERMC systems",
+        "Remote code execution possible depending on Jupyter configuration"
+      ],
+      "regulatory_implications": [
+        "Patient data in notebooks: HIPAA breach risk assessment required",
+        "Jupyter servers with code execution access may constitute unauthorized access vector"
+      ],
+      "remediation": "Take Jupyter server offline or block external access immediately. Enable authentication before bringing online. Audit all notebooks for PHI and credentials. Move to internal network only.",
+      "remediation_steps": [
+        "Block all external access to port 8888 at firewall immediately",
+        "Enable Jupyter token or password authentication",
+        "Audit all notebook files for patient data and API credentials",
+        "Restrict Jupyter servers to internal network permanently",
+        "Assess whether patient data constitutes a HIPAA breach"
+      ],
+      "response_deadline": "today",
+      "response_deadline_plain": "Today — before close of business",
+      "hipaa_review_required": true,
+      "timestamp": "2026-06-02T14:32:08Z",
+      "raw": {
+        "url": "http://jupyter.example-rmc.org:8888",
+        "authenticated": false,
+        "notebooks_visible": [
+          "clinical_model_v2.ipynb",
+          "patient_cohort_analysis.ipynb"
+        ]
+      }
+    },
+    {
+      "id": "llm-recon-0001",
+      "module": "llm-recon",
+      "source": "HTTP Passive Probe",
+      "query": "GET https://api.example-rmc.org/v1/chat/completions",
+      "url": "https://api.example-rmc.org/v1/chat/completions",
+      "title": "OpenAI-Compatible LLM API Endpoint Accessible Without Authentication",
+      "description": "A passive HTTP probe of api.example-rmc.org returned HTTP 200 on the /v1/chat/completions endpoint. The endpoint accepts requests without an API key. This is an OpenAI-compatible inference endpoint that may allow unrestricted AI model querying.",
+      "plain_language_summary": "An AI system interface at ERMC is accepting requests from anyone on the internet without requiring a password or login.",
+      "severity": "high",
+      "tippss": ["Identity", "Protection", "Security"],
+      "tippss_plain": {
+        "Identity": "No authentication is required to access this AI endpoint",
+        "Protection": "The endpoint lacks access controls",
+        "Security": "Unauthenticated AI APIs are a primary target for adversaries"
+      },
+      "business_impact": [
+        "Unauthorized AI inference at ERMC's expense",
+        "Potential prompt injection and jailbreak attacks",
+        "Data extraction through model context if PHI accessible"
+      ],
+      "regulatory_implications": [],
+      "remediation": "Require API key authentication on all LLM inference endpoints. Apply IP allowlisting. Enable request logging and anomaly detection.",
+      "remediation_steps": [
+        "Implement API key authentication on /v1/chat/completions",
+        "Restrict endpoint to authorized IP ranges",
+        "Enable access logging",
+        "Implement rate limiting to prevent abuse"
+      ],
+      "response_deadline": "this_week",
+      "response_deadline_plain": "Within 7 days",
+      "hipaa_review_required": false,
+      "timestamp": "2026-06-02T14:33:55Z",
+      "raw": {
+        "url": "https://api.example-rmc.org/v1/chat/completions",
+        "http_status": 200,
+        "authenticated": false
+      }
+    },
+    {
+      "id": "leakix-0001",
+      "module": "leakix-scan",
+      "source": "LeakIX Confirmed Data Leak",
+      "query": "LeakIX domain: example-rmc.org",
+      "url": "https://leakix.net/host/198.51.100.15",
+      "title": "LeakIX Confirmed: .env File Exposed with Database Credentials",
+      "description": "LeakIX plugin EnvFilePlugin confirmed an exposed .env configuration file at config.example-rmc.org (198.51.100.15) containing database connection strings. Unlike port scan findings, LeakIX plugin detections indicate confirmed data accessibility — the file content was verified. Database credentials in the .env file may provide direct access to clinical data systems.",
+      "plain_language_summary": "A configuration file containing database passwords has been confirmed as publicly accessible. This is not just a risk — it has been verified as exposed.",
+      "severity": "high",
+      "tippss": ["Identity", "Security"],
+      "tippss_plain": {
+        "Identity": "Database credentials are publicly exposed",
+        "Security": "Exposed credentials provide direct access to backend systems"
+      },
+      "business_impact": [
+        "Database credentials may provide access to clinical data systems",
+        "Attackers can use credentials to extract patient records",
+        "Compromised credentials may allow modification of clinical data"
+      ],
+      "regulatory_implications": [
+        "If credentials provide access to PHI: potential HIPAA breach"
+      ],
+      "remediation": "Remove .env file from public access immediately. Rotate all credentials contained in the file. Audit database access logs for unauthorized connections.",
+      "remediation_steps": [
+        "Remove .env file from web-accessible directory",
+        "Rotate all database and service credentials in the file",
+        "Audit database access logs for unauthorized connections",
+        "Block .env files at web server level (nginx/Apache config)",
+        "Implement secrets management for all credentials"
+      ],
+      "response_deadline": "this_week",
+      "response_deadline_plain": "Within 7 days",
+      "hipaa_review_required": true,
+      "timestamp": "2026-06-02T14:34:22Z",
+      "raw": {
+        "ip": "198.51.100.15",
+        "plugin": "EnvFilePlugin",
+        "leakix_verified": true
+      }
+    },
+    {
+      "id": "vendor-intel-0001",
+      "module": "vendor-intel",
+      "source": "Supply Chain Risk Assessment",
+      "query": "AI supply chain risk: example-rmc.org",
+      "url": "",
+      "title": "Third-Party AI Model Dependency Risk — OpenAI and Azure OpenAI",
+      "description": "Public sources confirm ERMC's clinical AI tools rely on OpenAI and Azure OpenAI cloud APIs. PHI transmitted to these APIs is processed by third-party infrastructure. Risks include vendor data breach, service outage disrupting clinical workflows, model updates changing AI behavior, and potential gaps in HIPAA BAA coverage for specific use cases.",
+      "plain_language_summary": "ERMC's AI tools send data to third-party companies (OpenAI, Microsoft) for processing. This creates risks if those companies experience a breach, outage, or if ERMC's data sharing agreements are incomplete.",
+      "severity": "medium",
+      "tippss": ["Trust", "Privacy", "Security"],
+      "tippss_plain": {
+        "Trust": "ERMC's AI systems depend on vendor trustworthiness and uptime",
+        "Privacy": "Clinical data may be transmitted to third-party AI vendors",
+        "Security": "Vendor breach could expose ERMC patient data"
+      },
+      "business_impact": [
+        "Vendor breach could expose patient data processed through AI APIs",
+        "Service outage could disrupt clinical AI tools",
+        "Model updates could change clinical AI behavior without notice"
+      ],
+      "regulatory_implications": [
+        "HIPAA BAA required for any vendor processing PHI",
+        "Verify BAA coverage for OpenAI and Azure OpenAI",
+        "Data processing agreements required under applicable privacy laws"
+      ],
+      "remediation": "Audit all LLM API integrations for PHI transmission. Confirm HIPAA BAAs with all AI vendors. Implement data minimization in AI prompts. Evaluate on-premise options for highest-sensitivity use cases.",
+      "remediation_steps": [
+        "Audit all AI API calls for PHI content",
+        "Confirm HIPAA BAA status with OpenAI and Microsoft",
+        "Implement data minimization — strip PHI from AI prompts where possible",
+        "Develop AI vendor continuity plan",
+        "Monitor vendor security advisories and breach disclosures"
+      ],
+      "response_deadline": "this_month",
+      "response_deadline_plain": "Within 30 days",
+      "hipaa_review_required": true,
+      "timestamp": "2026-06-02T14:34:44Z",
+      "raw": {
+        "vendors_identified": ["OpenAI", "Microsoft Azure OpenAI", "Nuance/Microsoft DAX"]
+      }
+    }
+  ],
+  "siem_fields": {
+    "alert_title": "IEEE CyberSalukis HealthGuard OSINT — CRITICAL Assessment: Example Regional Medical Center",
+    "alert_severity": "critical",
+    "alert_count": 24,
+    "critical_count": 4,
+    "high_count": 8,
+    "hipaa_review_required": true,
+    "immediate_action_required": true,
+    "tags": [
+      "healthcare-ai",
+      "osint",
+      "attack-surface",
+      "hipaa",
+      "tippss",
+      "llm-security",
+      "phi-exposure",
+      "credential-exposure"
+    ],
+    "mitre_atlas": [
+      "AML.T0000 - ML Model Access",
+      "AML.T0007 - Discover ML Artifacts",
+      "AML.T0037 - Data from Information Repositories",
+      "AML.T0047 - ML-Enabled Product or Service"
+    ],
+    "source_framework": "IEEE CyberSalukis HealthGuard OSINT v1.0",
+    "report_id": "ERMC-2026-0602-001"
+  }
+}
