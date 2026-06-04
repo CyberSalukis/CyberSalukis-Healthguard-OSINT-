@@ -1,0 +1,16 @@
+requests>=2.31.0
+httpx>=0.25.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+shodan>=1.31.0
+PyGithub>=2.1.0
+google-api-python-client>=2.100.0
+# Bing, Brave, and Mojeek use standard requests — no additional SDK required
+pandas>=2.1.0
+Jinja2>=3.1.2
+PyYAML>=6.0.1
+rich>=13.6.0
+click>=8.1.7
+python-dotenv>=1.0.0
+colorama>=0.4.6
+tqdm>=4.66.0
