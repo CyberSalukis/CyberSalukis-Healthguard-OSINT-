@@ -1,0 +1,132 @@
+# CyberSalukis HealthGuard OSINT
+# LLM Endpoint Discovery Query Library
+# Category: LLM Vulnerability Surface
+# Tested: June 2026
+#
+# AUTHORIZED USE ONLY
+
+queries:
+
+  - title: "Ollama API Endpoint Discovery"
+    query: 'site:{domain} inurl:"/api/generate" OR inurl:"/api/chat" OR inurl:":11434"'
+    description: >
+      Discovers publicly accessible Ollama LLM serving endpoints. Ollama exposes
+      a REST API on port 11434 that, if unauthenticated and public, allows unrestricted
+      model listing and querying including any custom fine-tuned models.
+    severity: critical
+    tippss: [Identity, Protection, Security]
+    remediation: Bind Ollama to localhost. Place behind authenticated reverse proxy.
+
+  - title: "vLLM Inference Server Endpoint"
+    query: 'site:{domain} inurl:"/generate" OR inurl:"/v1/completions" "vllm" OR "vLLM"'
+    description: >
+      vLLM is a high-throughput LLM serving library. Exposed vLLM instances without
+      authentication allow unrestricted model inference and potential data extraction
+      through the model's context window.
+    severity: critical
+    tippss: [Identity, Protection, Security]
+    remediation: >
+      Require API key authentication on all vLLM deployments.
+      Restrict to internal networks. Implement request rate limiting and logging.
+
+  - title: "HuggingFace Inference API — Healthcare Model"
+    query: 'site:huggingface.co "{target}" "healthcare" OR "clinical" OR "medical" OR "HIPAA"'
+    description: >
+      Searches HuggingFace for publicly hosted AI models associated with the target
+      healthcare organization. Public models may have been trained on clinical data
+      and expose training data through model inversion attacks.
+    severity: high
+    tippss: [Privacy, Security]
+    remediation: >
+      Audit all publicly hosted models for training data privacy.
+      Consider hosting sensitive models privately.
+      Conduct model inversion risk assessment for clinically-trained models.
+
+  - title: "LangChain Application Deployment — Healthcare Context"
+    query: 'site:{domain} "langchain" OR "LangChain" "chain" "healthcare" OR "clinical" OR "patient"'
+    description: >
+      LangChain is commonly used to build RAG-based healthcare AI applications.
+      Exposed LangChain application endpoints may permit prompt injection attacks
+      that leverage the chain's tool access to extract PHI or manipulate clinical workflows.
+    severity: high
+    tippss: [Trust, Identity, Safety, Security]
+    remediation: >
+      Restrict LangChain application endpoints behind authentication.
+      Implement tool-use access controls. Audit chain configurations for PHI data sources.
+      Deploy output filtering and anomaly detection.
+
+  - title: "OpenWebUI (ChatGPT-like Interface) Deployment"
+    query: 'site:{domain} inurl:openwebui OR inurl:open-webui "healthcare" OR "clinical"'
+    description: >
+      OpenWebUI is a popular self-hosted ChatGPT-like interface often deployed in healthcare
+      organizations for staff AI access. Unauthenticated or misconfigured instances expose
+      AI model access and conversation history.
+    severity: high
+    tippss: [Identity, Privacy, Protection]
+    remediation: >
+      Enable OpenWebUI authentication. Restrict to internal network access.
+      Audit user access logs. Implement role-based access control.
+
+  - title: "LlamaIndex RAG Application Exposure"
+    query: 'site:{domain} "llama_index" OR "llamaindex" OR "LlamaIndex" "healthcare" OR "clinical"'
+    description: >
+      LlamaIndex is used to build RAG systems that index clinical documents.
+      Exposed LlamaIndex applications may leak indexed document contents through
+      the AI query interface, effectively bypassing document access controls.
+    severity: high
+    tippss: [Privacy, Protection, Security]
+    remediation: >
+      Restrict RAG application access to authenticated users.
+      Audit document index for PHI. Implement query logging and monitoring.
+
+  - title: "AWS Bedrock Endpoint in Public Code"
+    query: 'site:github.com "{target}" "bedrock" "us-east-1" OR "us-west-2" "healthcare" OR "patient"'
+    description: >
+      AWS Bedrock provides managed LLM services with HIPAA-eligible configurations.
+      Exposed Bedrock endpoint configurations in public code reveal cloud infrastructure
+      and may contain IAM credentials with model access.
+    severity: high
+    tippss: [Identity, Security]
+    remediation: >
+      Remove Bedrock configuration from public repositories.
+      Rotate exposed IAM credentials. Enable AWS CloudTrail for Bedrock API auditing.
+
+  - title: "Azure OpenAI Service Endpoint Disclosure"
+    query: 'site:{domain} OR site:github.com "{target}" "openai.azure.com" "api-key" OR "endpoint" "healthcare"'
+    description: >
+      Azure OpenAI Service is commonly used in healthcare AI deployments due to HIPAA
+      eligibility. Exposed Azure OpenAI endpoint URLs and API keys enable unauthorized
+      model access at the organization's expense and under their compliance obligations.
+    severity: critical
+    tippss: [Identity, Security]
+    remediation: >
+      Immediately rotate Azure OpenAI API keys.
+      Restrict endpoint access via Azure Virtual Network service endpoints.
+      Enable Azure Monitor for anomalous API usage detection.
+
+  - title: "Prompt Injection Attack Surface — Healthcare Bot"
+    query: 'site:{domain} "chatbot" OR "virtual assistant" OR "AI assistant" "symptom" OR "appointment" OR "prescription"'
+    description: >
+      Healthcare chatbots and virtual assistants with clinical functionality (symptom checking,
+      appointment scheduling, prescription queries) represent high-value prompt injection targets.
+      Successful injection may access PHI, manipulate scheduling, or generate harmful clinical guidance.
+    severity: high
+    tippss: [Trust, Identity, Safety, Security]
+    remediation: >
+      Deploy prompt injection defenses on all clinical AI chatbots.
+      Implement input sanitization and output validation.
+      Limit chatbot tool access to minimum required.
+      Conduct regular red-team testing of injection resistance.
+
+  - title: "Model Card / System Card with Sensitive Architecture Details"
+    query: 'site:{domain} OR site:huggingface.co "{target}" "model card" OR "system card" "training data" "clinical" OR "patient"'
+    description: >
+      Model cards published for healthcare AI systems often disclose training data sources,
+      model limitations, failure modes, and deployment context that enable targeted
+      adversarial attacks against known weaknesses.
+    severity: medium
+    tippss: [Trust, Safety, Security]
+    remediation: >
+      Review model cards for security-sensitive disclosures before publication.
+      Avoid disclosing specific training data sources, known failure modes, or
+      infrastructure details in public model documentation.
