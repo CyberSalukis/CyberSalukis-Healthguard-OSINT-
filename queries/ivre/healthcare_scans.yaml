@@ -1,0 +1,55 @@
+# CyberSalukis HealthGuard OSINT
+# IVRE Query Library — Healthcare AI Network Scans
+# Open Source (GPL v3) — Self-hostable
+# Tested: June 2026
+# AUTHORIZED USE ONLY
+
+queries:
+
+  - title: "IVRE: LLM Serving Ports"
+    query: "ports.port:11434 or ports.port:7860 or ports.port:8501"
+    cli_filter: "--port 11434,7860,8501"
+    description: Ollama (11434), Gradio (7860), Streamlit (8501) — primary LLM serving ports.
+    severity: critical
+    tippss: [Identity, Protection, Security]
+    remediation: Restrict to internal network. Require authentication on all AI serving endpoints.
+
+  - title: "IVRE: Healthcare Database Ports"
+    query: "ports.port:9200 or ports.port:6333 or ports.port:27017 or ports.port:6379"
+    cli_filter: "--port 9200,6333,27017,6379"
+    description: Elasticsearch, Qdrant, MongoDB, Redis — common healthcare AI data stores.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable authentication on all instances. Restrict to internal networks.
+
+  - title: "IVRE: Medical Protocol Ports (DICOM/HL7)"
+    query: "ports.port:104 or ports.port:2575 or ports.port:11112"
+    cli_filter: "--port 104,2575,11112"
+    description: DICOM (104, 11112) and HL7 MLLP (2575) healthcare protocol ports.
+    severity: critical
+    tippss: [Privacy, Protection, Safety, Security]
+    remediation: Restrict to internal clinical network immediately. No public exposure acceptable.
+
+  - title: "IVRE: Jupyter Notebook Exposure"
+    query: "ports.port:8888"
+    cli_filter: "--port 8888"
+    description: Jupyter notebook servers. Healthcare AI development environments with PHI risk.
+    severity: critical
+    tippss: [Identity, Privacy, Protection, Security]
+    remediation: Enable authentication. Restrict to localhost. Audit for sensitive content.
+
+  - title: "IVRE: AI Infrastructure Ports (Flask/vLLM/BentoML)"
+    query: "ports.port:5000 or ports.port:8000 or ports.port:3000"
+    cli_filter: "--port 5000,8000,3000"
+    description: Common AI API serving ports. May expose healthcare AI model inference endpoints.
+    severity: high
+    tippss: [Identity, Protection, Security]
+    remediation: Audit running services. Require authentication on AI APIs.
+
+  - title: "IVRE: Vector Store Ports (Milvus/Weaviate)"
+    query: "ports.port:19530 or ports.port:8080"
+    cli_filter: "--port 19530,8080"
+    description: Milvus (19530) and Weaviate (8080) vector databases for large-scale clinical RAG.
+    severity: critical
+    tippss: [Privacy, Protection, Security]
+    remediation: Enable authentication. Restrict to internal network. Audit for PHI embeddings.
