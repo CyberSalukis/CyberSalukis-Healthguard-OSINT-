@@ -1,4 +1,4 @@
-# IEEE CyberSalukis HealthGuard OSINT
+# CyberSalukis HealthGuard OSINT
 
 **An Open-Source Digital Public Good (DPG) — Automated OSINT Reconnaissance Framework for Healthcare AI Security**
 
@@ -11,7 +11,7 @@
 
 ## Overview
 
-**IEEE CyberSalukis HealthGuard OSINT** is the first open-source OSINT framework purpose-built for identifying, mapping, and reducing the AI attack surface of healthcare organizations. It is designed as a **Digital Public Good (DPG)** — free, open, and accessible to all health systems globally, including resource-constrained community hospitals, rural health systems, and public health agencies.
+**CyberSalukis HealthGuard OSINT** is the first open-source OSINT framework purpose-built for identifying, mapping, and reducing the AI attack surface of healthcare organizations. It is designed as a **Digital Public Good (DPG)** — free, open, and accessible to all health systems globally, including resource-constrained community hospitals, rural health systems, and public health agencies.
 
 Healthcare organizations are deploying AI models, LLMs, agentic AI systems, and AI-connected IoT devices at an unprecedented pace. Most lack a structured, automated process for understanding what parts of those systems are externally discoverable, exposed, or vulnerable through open-source intelligence. This framework closes that gap.
 
