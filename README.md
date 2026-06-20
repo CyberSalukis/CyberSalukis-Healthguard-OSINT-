@@ -105,7 +105,7 @@ HealthGuard OSINT produces:
 ### Sample Report Structure
 
 ```
-IEEE CyberSalukis HealthGuard OSINT — Attack Surface Assessment
+CyberSalukis HealthGuard OSINT — Attack Surface Assessment
 Target: [Organization Name]
 Assessment Date: [Date]
 Modules Run: [List]
@@ -200,7 +200,7 @@ CyberSalukis-Healthguard-OSINT-/
 - Review your jurisdiction's computer access laws before use
 - See [RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md) for full policy
 
-**Misuse of this framework against systems without authorization is illegal and unethical. The IEEE CyberSalukis team and contributors bear no responsibility for unauthorized use.**
+**Misuse of this framework against systems without authorization is illegal and unethical. The CyberSalukis team and contributors bear no responsibility for unauthorized use.**
 
 ---
 
@@ -219,7 +219,7 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 
 ## Team
 
-**IEEE CyberSalukis** — IEEE SA Cybersecurity Hackathon 2026
+*** CyberSalukis** — IEEE SA Cybersecurity Hackathon 2026
 
 ---
 
